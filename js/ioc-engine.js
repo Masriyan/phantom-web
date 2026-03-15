@@ -73,8 +73,20 @@ const IOCEngine = (() => {
     let m;
     const urlPat = new RegExp(PATTERNS.url.source, 'gi');
     while ((m = urlPat.exec(text)) !== null) {
-      add('url', m[0]);
-      urls.push({ start: m.index, end: m.index + m[0].length });
+      // Strip trailing sentence punctuation that regex greedily consumed
+      let url = m[0].replace(/[.,;:'")\]>]+$/, '');
+      add('url', url);
+      urls.push({ start: m.index, end: m.index + url.length });
+      // Also extract any IP that appears as the hostname of this URL
+      // (important for defanged IPs that become valid URLs after defang)
+      try {
+        const parsed = new URL(url);
+        const ipPat4 = new RegExp(PATTERNS.ipv4.source);
+        if (ipPat4.test(parsed.hostname)) {
+          const priv = isPrivateIP(parsed.hostname);
+          add('ip', parsed.hostname, { private: priv, v: 4, source: 'url-host' });
+        }
+      } catch {}
     }
 
     // Mask out URL spans before other extractions
