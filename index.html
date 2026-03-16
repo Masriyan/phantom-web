@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHANTOM — Threat Intelligence Workbench</title>
+<meta name="description" content="Self-contained browser-based threat intelligence workbench. IOC extraction, file analysis, ATT&CK mapping, Diamond Model — zero external API.">
+<link rel="stylesheet" href="css/phantom.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="logo">
+      <div class="logo-mark">PHANTOM</div>
+      <div class="logo-sub">TI Workbench v1.0</div>
+    </div>
+    <nav>
+      <div class="section-label">Workbench</div>
+      <div class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">◈</span><span>Dashboard</span>
+      </div>
+      <div class="nav-item" data-page="ioc">
+        <span class="nav-icon">⬡</span><span>IOC Extractor</span>
+      </div>
+      <div class="nav-item" data-page="file">
+        <span class="nav-icon">⬢</span><span>File Analyzer</span>
+      </div>
+      <div class="nav-item" data-page="attck">
+        <span class="nav-icon">⊹</span><span>ATT&CK Mapper</span>
+      </div>
+      <div class="section-label">Intelligence</div>
+      <div class="nav-item" data-page="diamond">
+        <span class="nav-icon">◇</span><span>Diamond Model</span>
+      </div>
+      <div class="nav-item" data-page="database">
+        <span class="nav-icon">⊞</span><span>IOC Database</span>
+        <span class="nav-badge" id="ioc-nav-count">0</span>
+      </div>
+      <div class="nav-item" data-page="report">
+        <span class="nav-icon">▤</span><span>Report Builder</span>
+      </div>
+    </nav>
+    <div id="sidebar-footer">
+      <div>Zero external API</div>
+      <div>Air-gap compatible</div>
+      <div class="version">// PHANTOM Web v1.0</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div id="main">
+    <div id="topbar">
+      <div>
+        <div class="page-title" id="topbar-title">Dashboard</div>
+        <div class="page-desc" id="topbar-desc">Platform overview and quick stats</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="PhantomDB.clearAll().then(()=>{showToast('Database cleared','warning');refreshStats();})">Clear DB</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('ioc')">+ New Analysis</button>
+      </div>
+    </div>
+
+    <div id="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page active" id="page-dashboard">
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="stat-card"><div class="stat-value" id="stat-total-ioc">0</div><div class="stat-label">Total IOCs</div></div>
+          <div class="stat-card red"><div class="stat-value" id="stat-domains">0</div><div class="stat-label">Domains</div></div>
+          <div class="stat-card orange"><div class="stat-value" id="stat-ips">0</div><div class="stat-label">IP Addresses</div></div>
+          <div class="stat-card blue"><div class="stat-value" id="stat-hashes">0</div><div class="stat-label">File Hashes</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">IOC Distribution</span></div>
+            <div class="card-body">
+              <div id="ioc-chart" style="min-height:160px;display:flex;align-items:center;justify-content:center;">
+                <div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">No IOCs in database yet.<br>Run an IOC extraction first.</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Recent Activity</span></div>
+            <div class="card-body">
+              <div id="recent-activity">
+                <div class="empty-state"><div class="empty-icon">⊹</div><div class="empty-text">No recent activity.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px" class="card">
+          <div class="card-header"><span class="card-title">Quick Start</span></div>
+          <div class="card-body">
+            <div class="grid-3">
+              <div style="padding:12px;border:1px solid var(--border);border-radius:6px;cursor:pointer" onclick="showPage('ioc')">
+                <div style="color:var(--accent);font-size:20px;margin-bottom:8px">⬡</div>
+                <div style="font-size:12px;color:var(--text0);margin-bottom:4px">IOC Extractor</div>
+                <div style="font-size:11px;color:var(--text3)">Paste threat report or raw text to auto-extract IOCs</div>
+              </div>
+              <div style="padding:12px;border:1px solid var(--border);border-radius:6px;cursor:pointer" onclick="showPage('file')">
+                <div style="color:var(--orange);font-size:20px;margin-bottom:8px">⬢</div>
+                <div style="font-size:12px;color:var(--text0);margin-bottom:4px">File Analyzer</div>
+                <div style="font-size:11px;color:var(--text3)">Upload any file for hash, entropy, YARA-lite analysis</div>
+              </div>
+              <div style="padding:12px;border:1px solid var(--border);border-radius:6px;cursor:pointer" onclick="showPage('attck')">
+                <div style="color:var(--purple);font-size:20px;margin-bottom:8px">⊹</div>
+                <div style="font-size:12px;color:var(--text0);margin-bottom:4px">ATT&CK Mapper</div>
+                <div style="font-size:11px;color:var(--text3)">Map TTPs to MITRE ATT&CK, export Navigator layer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== IOC EXTRACTOR ===== -->
+      <div class="page" id="page-ioc">
+        <div class="grid-2" style="gap:16px;height:calc(100vh - 120px)">
+          <div class="card" style="display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">Input</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ioc-input').value='';renderIOCResults({})">Clear</button>
+                <button class="btn btn-ghost btn-sm" onclick="pasteFromClipboard()">Paste</button>
+                <button class="btn btn-primary btn-sm" onclick="runIOCExtraction()">Extract IOCs</button>
+              </div>
+            </div>
+            <div class="card-body" style="flex:1;display:flex;flex-direction:column;gap:12px">
+              <div class="form-group" style="flex:1;display:flex;flex-direction:column;margin-bottom:0">
+                <label class="form-label">Paste threat report, raw text, CTI report, email, logs...</label>
+                <textarea id="ioc-input" placeholder="Paste any text containing IOCs here. Supports defanged IOCs: hxxp://, [.], [at], etc.&#10;&#10;Example:&#10;Attacker IP: 185.220.101.45&#10;C2 domain: evil-c2[.]xyz&#10;SHA256: d41d8cd98f00b204e9800998ecf8427e&#10;CVE-2024-12345&#10;T1566.001, T1059.001" style="flex:1;min-height:200px;resize:none"></textarea>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="file" id="ioc-file-input" accept=".txt,.log,.json,.csv,.pdf,.md,.html" onchange="loadFileForIOC(this)">
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ioc-file-input').click()">Upload File</button>
+                <div id="ioc-defang-note" style="font-size:10px;color:var(--text3)">Defanging auto-detected</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="card-header">
+              <span class="card-title">Extracted IOCs</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span id="ioc-total-badge" style="font-size:11px;color:var(--text3)">–</span>
+                <button class="btn btn-ghost btn-sm" onclick="copyAllIOCs()">Copy All</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportIOCsCSV()">Export CSV</button>
+                <button class="btn btn-primary btn-sm" onclick="saveAllIOCsToDB()">Save to DB</button>
+              </div>
+            </div>
+            <div class="card-body" style="flex:1;overflow-y:auto" id="ioc-results">
+              <div class="empty-state"><div class="empty-icon">⬡</div><div class="empty-text">Extracted IOCs will appear here.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== FILE ANALYZER ===== -->
+      <div class="page" id="page-file">
+        <div id="file-upload-area">
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <div class="upload-icon">⬢</div>
+            <div class="upload-text">Click or drag file to analyze</div>
+            <div class="upload-sub">PE/ELF/APK/PDF/ZIP/Scripts — max 50MB — all analysis runs locally in browser</div>
+          </div>
+          <input type="file" id="file-input" onchange="analyzeFile(this.files[0])">
+        </div>
+      </div>
+
+      <!-- ===== ATT&CK MAPPER ===== -->
+      <div class="page" id="page-attck">
+        <div class="grid-2" style="gap:16px">
+          <div class="card" style="max-height:calc(100vh-120px);display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">Technique Search</span>
+              <button class="btn btn-ghost btn-sm" onclick="clearATTCKSelection()">Clear All</button>
+            </div>
+            <div class="card-body" style="flex:1;overflow-y:auto;padding:12px">
+              <input type="search" id="attck-search" placeholder="Search techniques by ID, name, or description..." oninput="renderATTCKSearch(this.value)" style="margin-bottom:12px">
+              <div id="attck-tactic-filter" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px"></div>
+              <div id="attck-results" style="overflow-y:auto;max-height:calc(100vh - 300px)"></div>
+            </div>
+          </div>
+          <div class="card" style="max-height:calc(100vh-120px);display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">Selected TTPs</span>
+              <div style="display:flex;gap:8px">
+                <span id="ttp-count" style="font-size:11px;color:var(--text3)">0 selected</span>
+                <button class="btn btn-ghost btn-sm" onclick="exportNavigatorLayer()">Export Layer</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportTTPsText()">Export Text</button>
+              </div>
+            </div>
+            <div class="card-body" style="flex:1;overflow-y:auto;padding:12px">
+              <div class="section-title">ATT&CK Coverage Heatmap</div>
+              <div id="attck-heatmap" class="attck-grid" style="margin-bottom:16px"></div>
+              <div class="section-title">Selected Techniques</div>
+              <div id="selected-ttps"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DIAMOND MODEL ===== -->
+      <div class="page" id="page-diamond">
+        <div class="grid-2" style="gap:16px">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Diamond Model Builder</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="clearDiamond()">Clear</button>
+                <button class="btn btn-primary btn-sm" onclick="saveDiamond()">Save Instance</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Instance Name / Campaign</label>
+                <input type="text" id="diamond-name" placeholder="e.g. APT28-BankingCampaign-2024">
+              </div>
+              <div class="grid-2" style="gap:12px">
+                <div class="form-group">
+                  <label class="form-label" style="color:var(--red)">Adversary</label>
+                  <textarea id="diamond-adversary" placeholder="Threat actor name, aliases, attribution confidence..." style="min-height:80px"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="color:var(--purple)">Capability</label>
+                  <textarea id="diamond-capability" placeholder="Malware families, tools, exploits, TTPs..." style="min-height:80px"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="color:var(--blue)">Infrastructure</label>
+                  <textarea id="diamond-infrastructure" placeholder="C2 servers, IPs, domains, hosting providers..." style="min-height:80px"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="color:var(--yellow)">Victim</label>
+                  <textarea id="diamond-victim" placeholder="Target organization, sector, country, system..." style="min-height:80px"></textarea>
+                </div>
+              </div>
+              <div class="grid-2" style="gap:12px">
+                <div class="form-group">
+                  <label class="form-label">Meta-Feature: Phase (Kill Chain)</label>
+                  <select id="diamond-phase">
+                    <option value="">Select phase...</option>
+                    <option>Reconnaissance</option>
+                    <option>Weaponization</option>
+                    <option>Delivery</option>
+                    <option>Exploitation</option>
+                    <option>Installation</option>
+                    <option>Command & Control</option>
+                    <option>Actions on Objectives</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confidence</label>
+                  <select id="diamond-confidence">
+                    <option value="0.9">High (90%)</option>
+                    <option value="0.7" selected>Medium (70%)</option>
+                    <option value="0.5">Low (50%)</option>
+                    <option value="0.3">Speculative (30%)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">TLP</label>
+                <div style="display:flex;gap:8px" id="tlp-selector">
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="tlp" value="red"> <span class="tag tag-tlp-red">TLP:RED</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="tlp" value="amber" checked> <span class="tag tag-tlp-amber">TLP:AMBER</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="tlp" value="green"> <span class="tag tag-tlp-green">TLP:GREEN</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="tlp" value="clear"> <span class="tag tag-tlp-white">TLP:CLEAR</span></label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notes / Context</label>
+                <textarea id="diamond-notes" placeholder="Additional context, source reports, analyst notes..." style="min-height:60px"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="flex-col">
+            <div class="card">
+              <div class="card-header"><span class="card-title">Diamond Visualization</span></div>
+              <div class="card-body">
+                <div class="diamond-container" id="diamond-preview">
+                  <div class="diamond-cell adversary">
+                    <div class="diamond-cell-label">Adversary</div>
+                    <div id="dv-adversary" style="font-size:11px;color:var(--text2)">Not set</div>
+                  </div>
+                  <div class="diamond-cell capability">
+                    <div class="diamond-cell-label">Capability</div>
+                    <div id="dv-capability" style="font-size:11px;color:var(--text2)">Not set</div>
+                  </div>
+                  <div class="diamond-cell infrastructure">
+                    <div class="diamond-cell-label">Infrastructure</div>
+                    <div id="dv-infrastructure" style="font-size:11px;color:var(--text2)">Not set</div>
+                  </div>
+                  <div class="diamond-cell victim">
+                    <div class="diamond-cell-label">Victim</div>
+                    <div id="dv-victim" style="font-size:11px;color:var(--text2)">Not set</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Saved Instances</span>
+                <button class="btn btn-ghost btn-sm" onclick="exportDiamondJSON()">Export JSON</button>
+              </div>
+              <div class="card-body" id="diamond-instances">
+                <div class="empty-state"><div class="empty-icon">◇</div><div class="empty-text">No saved instances yet.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== IOC DATABASE ===== -->
+      <div class="page" id="page-database">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">IOC Database</span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="search" id="db-search" placeholder="Search IOCs..." style="width:240px;min-height:0;padding:5px 10px" oninput="refreshDatabase(this.value)">
+              <select id="db-type-filter" onchange="refreshDatabase()" style="width:120px;padding:5px 8px">
+                <option value="">All types</option>
+                <option value="ip">IP</option>
+                <option value="domain">Domain</option>
+                <option value="url">URL</option>
+                <option value="hash">Hash</option>
+                <option value="email">Email</option>
+                <option value="cve">CVE</option>
+                <option value="mitre">MITRE</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="exportDBCSV()">CSV</button>
+              <button class="btn btn-ghost btn-sm" onclick="exportDBSTIX()">STIX 2.1</button>
+            </div>
+          </div>
+          <div id="db-table-wrap" style="overflow-x:auto">
+            <table class="phantom-table">
+              <thead>
+                <tr>
+                  <th>Value</th><th>Type</th><th>TLP</th><th>Confidence</th><th>Source</th><th>Tags</th><th>First Seen</th><th>Count</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="db-table-body">
+                <tr><td colspan="9" style="text-align:center;color:var(--text3);padding:32px">No IOCs in database</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== REPORT BUILDER ===== -->
+      <div class="page" id="page-report">
+        <div class="grid-2" style="gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Report Parameters</span></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Report Title</label>
+                <input type="text" id="rpt-title" placeholder="e.g. Threat Intelligence Report: APT-X Campaign">
+              </div>
+              <div class="grid-2" style="gap:12px">
+                <div class="form-group">
+                  <label class="form-label">Analyst Name</label>
+                  <input type="text" id="rpt-analyst" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Organization</label>
+                  <input type="text" id="rpt-org" placeholder="Your organization">
+                </div>
+              </div>
+              <div class="grid-2" style="gap:12px">
+                <div class="form-group">
+                  <label class="form-label">TLP Classification</label>
+                  <select id="rpt-tlp">
+                    <option value="RED">TLP:RED</option>
+                    <option value="AMBER" selected>TLP:AMBER</option>
+                    <option value="GREEN">TLP:GREEN</option>
+                    <option value="CLEAR">TLP:CLEAR</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Report Date</label>
+                  <input type="text" id="rpt-date" placeholder="e.g. 2024-03-16">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Executive Summary</label>
+                <textarea id="rpt-summary" placeholder="High-level summary of the threat..." style="min-height:80px"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Threat Actor / Attribution</label>
+                <textarea id="rpt-actor" placeholder="Threat actor description, attribution confidence..." style="min-height:60px"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Campaign Description</label>
+                <textarea id="rpt-campaign" placeholder="Campaign details, timeline, targets..." style="min-height:60px"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Technical Analysis</label>
+                <textarea id="rpt-technical" placeholder="Malware analysis, TTPs, IOC details..." style="min-height:80px"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Recommendations</label>
+                <textarea id="rpt-recommendations" placeholder="Mitigation steps, detection rules, patches..." style="min-height:60px"></textarea>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost" onclick="previewReport()">Preview</button>
+                <button class="btn btn-primary" onclick="downloadReportTXT()">Download TXT</button>
+                <button class="btn btn-ghost" onclick="downloadReportJSON()">Download JSON</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Report Preview</span></div>
+            <div class="card-body" style="overflow-y:auto;max-height:calc(100vh - 200px)">
+              <div id="report-preview" class="code-block" style="white-space:pre-wrap;font-size:11px;min-height:400px">// Click Preview to generate report preview</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="data/attck.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ioc-engine.js"></script>
+<script src="js/file-engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
