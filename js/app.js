@@ -21,6 +21,11 @@ const PAGE_META = {
   diamond: { title: 'Diamond Model', desc: 'Build and persist Diamond Model instances' },
   database: { title: 'IOC Database', desc: 'Local IndexedDB · Export CSV / STIX 2.1' },
   report: { title: 'Report Builder', desc: 'Generate CTI reports with IOCs, TTPs, and analysis' },
+  swiss: { title: 'Swiss Army Knife', desc: 'Encoder/Decoder · JWT · CIDR · Regex · Epoch — all offline' },
+  hash: { title: 'Hash Identifier', desc: 'Identify hash algorithm by pattern, length, and charset — 30+ types' },
+  urlanalyzer: { title: 'URL Analyzer', desc: 'Phishing detection · Entropy · Brand impersonation · Homoglyphs — zero API' },
+  threatactor: { title: 'Threat Actor Cards', desc: 'Build and export professional threat actor profile cards' },
+  cvss: { title: 'CVSS Calculator', desc: 'CVSS v3.1 Base & Temporal Score Calculator — offline' },
 };
 
 // ---- Navigation ----
@@ -39,6 +44,9 @@ function showPage(name) {
   if (name === 'dashboard') refreshStats();
   if (name === 'attck') initATTCK();
   if (name === 'diamond') refreshDiamondInstances();
+  if (name === 'swiss') SwissKnife && SwissKnife.init();
+  if (name === 'cvss') CVSSCalc && CVSSCalc.calc();
+  if (name === 'threatactor') ThreatActorCards && ThreatActorCards.updatePreview();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
