@@ -587,7 +587,12 @@
               <div class="form-group" style="margin:0">
                 <label class="form-label">Reference — Common Hash Lengths</label>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-                  ${[['MD5 / NTLM','32 hex'],['SHA-1','40 hex'],['Tiger/192','48 hex'],['SHA-256','64 hex'],['SHA-384','96 hex'],['SHA-512','128 hex']].map(([n,l])=>`<div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;cursor:pointer" onclick="document.getElementById('hash-input').value='';document.getElementById('hash-input').focus()"><div style="font-size:9px;color:var(--text3)">${n}</div><div style="font-size:11px;color:var(--accent)">${l}</div></div>`).join('')}
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">MD5 / NTLM</div><div style="font-size:11px;color:var(--accent)">32 hex</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">SHA-1</div><div style="font-size:11px;color:var(--accent)">40 hex</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">Tiger/192</div><div style="font-size:11px;color:var(--accent)">48 hex</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">SHA-256</div><div style="font-size:11px;color:var(--accent)">64 hex</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">SHA-384</div><div style="font-size:11px;color:var(--accent)">96 hex</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px"><div style="font-size:9px;color:var(--text3)">SHA-512</div><div style="font-size:11px;color:var(--accent)">128 hex</div></div>
                 </div>
               </div>
             </div>
@@ -617,16 +622,14 @@
               <div class="form-group" style="margin:0">
                 <label class="form-label" style="margin-bottom:6px">Analysis Engine</label>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-                  ${[
-                    ['DGA Detection','Shannon entropy analysis on domain'],
-                    ['Brand Impersonation','50+ brand keywords + homoglyphs'],
-                    ['Typosquatting','Digit/letter substitution check'],
-                    ['Suspicious TLD','List of abused TLD registry'],
-                    ['Open Redirect','Query param redirect detection'],
-                    ['Punycode/IDN','Unicode homograph detection'],
-                    ['Deep Subdomain','Subdomain chain depth analysis'],
-                    ['Credential URL','Username:password in URL check'],
-                  ].map(([t,d])=>`<div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">✓ ${t}</div><div style="font-size:9px;color:var(--text3)">${d}</div></div>`).join('')}
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; DGA Detection</div><div style="font-size:9px;color:var(--text3)">Shannon entropy analysis on domain</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Brand Impersonation</div><div style="font-size:9px;color:var(--text3)">50+ brand keywords + homoglyphs</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Typosquatting</div><div style="font-size:9px;color:var(--text3)">Digit/letter substitution check</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Suspicious TLD</div><div style="font-size:9px;color:var(--text3)">List of abused TLD registry</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Open Redirect</div><div style="font-size:9px;color:var(--text3)">Query param redirect detection</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Punycode/IDN</div><div style="font-size:9px;color:var(--text3)">Unicode homograph detection</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Deep Subdomain</div><div style="font-size:9px;color:var(--text3)">Subdomain chain depth analysis</div></div>
+                  <div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">&#10003; Credential URL</div><div style="font-size:9px;color:var(--text3)">Username:password in URL check</div></div>
                 </div>
               </div>
               <div style="padding:10px;background:var(--bg2);border-radius:4px;border:1px solid var(--border)">
@@ -763,57 +766,324 @@
       <!-- ===== CVSS CALCULATOR ===== -->
       <div class="page" id="page-cvss">
         <div class="grid-2" style="gap:16px">
-          <div class="card">
+          <div class="card" style="max-height:calc(100vh - 100px);overflow-y:auto">
             <div class="card-header"><span class="card-title">CVSS v3.1 Metrics</span></div>
             <div class="card-body">
               <div class="section-title" style="margin-bottom:10px">Base Score Metrics</div>
-
-              <!-- Helper macro for metric groups -->
               <div style="display:grid;gap:12px">
-                ${[
-                  ['Attack Vector', 'cvss-av', [['N','Network','Remotely exploitable over internet'],['A','Adjacent','Same network required'],['L','Local','Local access required'],['P','Physical','Physical access required']]],
-                  ['Attack Complexity', 'cvss-ac', [['L','Low','No special conditions'],['H','High','Specific conditions required']]],
-                  ['Privileges Required', 'cvss-pr', [['N','None','No auth required'],['L','Low','Low-privilege user'],['H','High','Admin privileges']]],
-                  ['User Interaction', 'cvss-ui', [['N','None','No user action needed'],['R','Required','User must take action']]],
-                  ['Scope', 'cvss-s', [['U','Unchanged','Impact limited to vuln component'],['C','Changed','Impact extends beyond component']]],
-                  ['Confidentiality', 'cvss-c', [['N','None','No C impact'],['L','Low','Some C impact'],['H','High','Total C loss']]],
-                  ['Integrity', 'cvss-i', [['N','None','No I impact'],['L','Low','Some I impact'],['H','High','Total I loss']]],
-                  ['Availability', 'cvss-a', [['N','None','No A impact'],['L','Low','Reduced performance'],['H','High','Total A loss']]],
-                ].map(([label, name, opts]) => `
-                  <div>
-                    <label class="form-label" style="margin-bottom:6px">${label}</label>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap">
-                      ${opts.map((o,i) => `<label style="cursor:pointer;flex:1;min-width:80px" title="${o[2]}">
-                        <input type="radio" name="${name}" value="${o[0]}" ${i===0?'checked':''} onchange="CVSSCalc.calc()" style="display:none">
-                        <div class="cvss-opt" data-name="${name}" data-val="${o[0]}" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=${name}]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;${i===0?'border-color:var(--accent);background:var(--accent-dim);color:var(--accent)':''}">
-                          <div style="font-size:12px;font-weight:700;${i===0?'color:var(--accent)':'color:var(--text0)'}">${o[0]}</div>
-                          <div style="font-size:9px;color:var(--text3)">${o[1]}</div>
-                        </div>
-                      </label>`).join('')}
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Attack Vector</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Remotely exploitable">
+                    <input type="radio" name="cvss-av" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-av" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-av&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">Network</div>
                     </div>
-                  </div>`).join('')}
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Same network required">
+                    <input type="radio" name="cvss-av" value="A"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-av" data-val="A" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-av&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">A</div>
+                      <div style="font-size:9px;color:var(--text3)">Adjacent</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Local access required">
+                    <input type="radio" name="cvss-av" value="L"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-av" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-av&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Local</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Physical access required">
+                    <input type="radio" name="cvss-av" value="P"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-av" data-val="P" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-av&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">P</div>
+                      <div style="font-size:9px;color:var(--text3)">Physical</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Attack Complexity</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No special conditions">
+                    <input type="radio" name="cvss-ac" value="L" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-ac" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-ac&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Low</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Specific conditions required">
+                    <input type="radio" name="cvss-ac" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-ac" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-ac&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Privileges Required</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No auth required">
+                    <input type="radio" name="cvss-pr" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-pr" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-pr&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">None</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Low-privilege user">
+                    <input type="radio" name="cvss-pr" value="L"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-pr" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-pr&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Low</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Admin privileges">
+                    <input type="radio" name="cvss-pr" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-pr" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-pr&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">User Interaction</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No user action needed">
+                    <input type="radio" name="cvss-ui" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-ui" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-ui&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">None</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="User must take action">
+                    <input type="radio" name="cvss-ui" value="R"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-ui" data-val="R" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-ui&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">R</div>
+                      <div style="font-size:9px;color:var(--text3)">Required</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Scope</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Impact limited to vuln component">
+                    <input type="radio" name="cvss-s" value="U" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-s" data-val="U" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-s&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">U</div>
+                      <div style="font-size:9px;color:var(--text3)">Unchanged</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Impact extends beyond component">
+                    <input type="radio" name="cvss-s" value="C"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-s" data-val="C" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-s&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">C</div>
+                      <div style="font-size:9px;color:var(--text3)">Changed</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Confidentiality</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No C impact">
+                    <input type="radio" name="cvss-c" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-c" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-c&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">None</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Some C impact">
+                    <input type="radio" name="cvss-c" value="L"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-c" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-c&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Low</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Total C loss">
+                    <input type="radio" name="cvss-c" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-c" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-c&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Integrity</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No I impact">
+                    <input type="radio" name="cvss-i" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-i" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-i&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">None</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Some I impact">
+                    <input type="radio" name="cvss-i" value="L"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-i" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-i&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Low</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Total I loss">
+                    <input type="radio" name="cvss-i" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-i" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-i&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Availability</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="No A impact">
+                    <input type="radio" name="cvss-a" value="N" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-a" data-val="N" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-a&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">N</div>
+                      <div style="font-size:9px;color:var(--text3)">None</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Reduced performance">
+                    <input type="radio" name="cvss-a" value="L"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-a" data-val="L" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-a&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">L</div>
+                      <div style="font-size:9px;color:var(--text3)">Low</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:80px" title="Total A loss">
+                    <input type="radio" name="cvss-a" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-a" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-a&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
               </div>
 
               <div class="section-title" style="margin-top:16px;margin-bottom:10px">Temporal Score Metrics <span style="font-size:9px;color:var(--text3);font-weight:400">(optional)</span></div>
               <div style="display:grid;gap:12px">
-                ${[
-                  ['Exploit Code Maturity (E)', 'cvss-e', [['X','ND','Not defined'],['U','Unproven','PoC unavailable'],['P','PoC','PoC public'],['F','Functional','Exploit public'],['H','High','Autonomous exploit']]],
-                  ['Remediation Level (RL)', 'cvss-rl', [['X','ND','Not defined'],['O','Official','Official fix'],['T','Temp','Temporary fix'],['W','Workaround','Workaround available'],['U','Unavailable','No fix available']]],
-                  ['Report Confidence (RC)', 'cvss-rc', [['X','ND','Not defined'],['U','Unknown','Unconfirmed'],['R','Reasonable','Reasonable confidence'],['C','Confirmed','Confirmed by vendor']]],
-                ].map(([label, name, opts]) => `
-                  <div>
-                    <label class="form-label" style="margin-bottom:6px">${label}</label>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap">
-                      ${opts.map((o,i) => `<label style="cursor:pointer;flex:1;min-width:60px" title="${o[2]}">
-                        <input type="radio" name="${name}" value="${o[0]}" ${i===0?'checked':''} onchange="CVSSCalc.calc()" style="display:none">
-                        <div class="cvss-opt" data-name="${name}" data-val="${o[0]}" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=${name}]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;${i===0?'border-color:var(--accent);background:var(--accent-dim);color:var(--accent)':''}">
-                          <div style="font-size:12px;font-weight:700;${i===0?'color:var(--accent)':'color:var(--text0)'}">${o[0]}</div>
-                          <div style="font-size:9px;color:var(--text3)">${o[1]}</div>
-                        </div>
-                      </label>`).join('')}
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Exploit Code Maturity (E)</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Not defined">
+                    <input type="radio" name="cvss-e" value="X" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-e" data-val="X" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-e&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">X</div>
+                      <div style="font-size:9px;color:var(--text3)">ND</div>
                     </div>
-                  </div>`).join('')}
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="PoC unavailable">
+                    <input type="radio" name="cvss-e" value="U"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-e" data-val="U" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-e&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">U</div>
+                      <div style="font-size:9px;color:var(--text3)">Unproven</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="PoC public">
+                    <input type="radio" name="cvss-e" value="P"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-e" data-val="P" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-e&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">P</div>
+                      <div style="font-size:9px;color:var(--text3)">PoC</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Exploit public">
+                    <input type="radio" name="cvss-e" value="F"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-e" data-val="F" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-e&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">F</div>
+                      <div style="font-size:9px;color:var(--text3)">Functional</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Autonomous exploit">
+                    <input type="radio" name="cvss-e" value="H"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-e" data-val="H" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-e&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">H</div>
+                      <div style="font-size:9px;color:var(--text3)">High</div>
+                    </div>
+                  </label>
+                </div>
               </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Remediation Level (RL)</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Not defined">
+                    <input type="radio" name="cvss-rl" value="X" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rl" data-val="X" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rl&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">X</div>
+                      <div style="font-size:9px;color:var(--text3)">ND</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Official fix">
+                    <input type="radio" name="cvss-rl" value="O"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rl" data-val="O" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rl&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">O</div>
+                      <div style="font-size:9px;color:var(--text3)">Official</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Temporary fix">
+                    <input type="radio" name="cvss-rl" value="T"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rl" data-val="T" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rl&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">T</div>
+                      <div style="font-size:9px;color:var(--text3)">Temp</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Workaround available">
+                    <input type="radio" name="cvss-rl" value="W"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rl" data-val="W" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rl&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">W</div>
+                      <div style="font-size:9px;color:var(--text3)">Workaround</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="No fix available">
+                    <input type="radio" name="cvss-rl" value="U"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rl" data-val="U" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rl&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">U</div>
+                      <div style="font-size:9px;color:var(--text3)">Unavailable</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:6px">Report Confidence (RC)</label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Not defined">
+                    <input type="radio" name="cvss-rc" value="X" checked onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rc" data-val="X" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rc&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;border-color:var(--accent);background:var(--accent-dim);">
+                      <div style="font-size:12px;font-weight:700;color:var(--accent)">X</div>
+                      <div style="font-size:9px;color:var(--text3)">ND</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Unconfirmed">
+                    <input type="radio" name="cvss-rc" value="U"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rc" data-val="U" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rc&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">U</div>
+                      <div style="font-size:9px;color:var(--text3)">Unknown</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Reasonable confidence">
+                    <input type="radio" name="cvss-rc" value="R"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rc" data-val="R" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rc&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">R</div>
+                      <div style="font-size:9px;color:var(--text3)">Reasonable</div>
+                    </div>
+                  </label>
+                  <label style="cursor:pointer;flex:1;min-width:60px" title="Confirmed by vendor">
+                    <input type="radio" name="cvss-rc" value="C"  onchange="CVSSCalc.calc()" style="display:none">
+                    <div class="cvss-opt" data-name="cvss-rc" data-val="C" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=&quot;cvss-rc&quot;]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;">
+                      <div style="font-size:12px;font-weight:700;color:var(--text0)">C</div>
+                      <div style="font-size:9px;color:var(--text3)">Confirmed</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              </div>
+
             </div>
           </div>
 
@@ -846,13 +1116,18 @@
               <div class="card-header"><span class="card-title">Severity Reference</span></div>
               <div class="card-body">
                 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
-                  ${[['None','0.0','var(--text3)'],['Low','0.1–3.9','var(--accent)'],['Medium','4.0–6.9','var(--yellow)'],['High','7.0–8.9','var(--orange)'],['Critical','9.0–10','var(--red)']].map(([s,r,c])=>`<div style="border:1px solid ${c}44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:${c}">${s}</div><div style="font-size:9px;color:var(--text3)">${r}</div></div>`).join('')}
+                  <div style="border:1px solid var(--text3)44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--text3)">None</div><div style="font-size:9px;color:var(--text3)">0.0</div></div>
+                  <div style="border:1px solid var(--accent)44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--accent)">Low</div><div style="font-size:9px;color:var(--text3)">0.1-3.9</div></div>
+                  <div style="border:1px solid var(--yellow)44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--yellow)">Medium</div><div style="font-size:9px;color:var(--text3)">4.0-6.9</div></div>
+                  <div style="border:1px solid var(--orange)44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--orange)">High</div><div style="font-size:9px;color:var(--text3)">7.0-8.9</div></div>
+                  <div style="border:1px solid var(--red)44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--red)">Critical</div><div style="font-size:9px;color:var(--text3)">9.0-10</div></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
 
 
   </div><!-- /main -->
