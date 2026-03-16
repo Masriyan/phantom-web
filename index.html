@@ -14,7 +14,7 @@
   <aside id="sidebar">
     <div id="logo">
       <div class="logo-mark">PHANTOM</div>
-      <div class="logo-sub">TI Workbench v1.0</div>
+      <div class="logo-sub">TI Workbench v2.0</div>
     </div>
     <nav>
       <div class="section-label">Workbench</div>
@@ -41,11 +41,27 @@
       <div class="nav-item" data-page="report">
         <span class="nav-icon">▤</span><span>Report Builder</span>
       </div>
+      <div class="section-label">Tools</div>
+      <div class="nav-item" data-page="swiss">
+        <span class="nav-icon">⊛</span><span>Swiss Army Knife</span>
+      </div>
+      <div class="nav-item" data-page="hash">
+        <span class="nav-icon">⊠</span><span>Hash Identifier</span>
+      </div>
+      <div class="nav-item" data-page="urlanalyzer">
+        <span class="nav-icon">⊡</span><span>URL Analyzer</span>
+      </div>
+      <div class="nav-item" data-page="threatactor">
+        <span class="nav-icon">◆</span><span>Threat Actor Cards</span>
+      </div>
+      <div class="nav-item" data-page="cvss">
+        <span class="nav-icon">⊟</span><span>CVSS Calculator</span>
+      </div>
     </nav>
     <div id="sidebar-footer">
       <div>Zero external API</div>
       <div>Air-gap compatible</div>
-      <div class="version">// PHANTOM Web v1.0</div>
+      <div class="version">// PHANTOM Web v2.0</div>
     </div>
   </aside>
 
@@ -418,6 +434,427 @@
       </div>
 
     </div><!-- /content -->
+
+      <!-- ===== SWISS ARMY KNIFE ===== -->
+      <div class="page" id="page-swiss">
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap;gap:8px">
+            <span class="card-title">Tools</span>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <button class="btn btn-ghost btn-sm swiss-tab active" data-tab="encoder" onclick="SwissKnife.switchTab('encoder')">Encoder/Decoder</button>
+              <button class="btn btn-ghost btn-sm swiss-tab" data-tab="jwt" onclick="SwissKnife.switchTab('jwt')">JWT Decoder</button>
+              <button class="btn btn-ghost btn-sm swiss-tab" data-tab="cidr" onclick="SwissKnife.switchTab('cidr')">CIDR Calc</button>
+              <button class="btn btn-ghost btn-sm swiss-tab" data-tab="regex" onclick="SwissKnife.switchTab('regex')">Regex Tester</button>
+              <button class="btn btn-ghost btn-sm swiss-tab" data-tab="epoch" onclick="SwissKnife.switchTab('epoch')">Epoch / Time</button>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <!-- Encoder/Decoder -->
+            <div id="swiss-panel-encoder">
+              <div class="grid-2" style="gap:16px">
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Input</label>
+                  <textarea id="enc-input" placeholder="Paste text to encode/decode..." style="min-height:180px;resize:vertical"></textarea>
+                  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+                    <input id="xor-key" type="text" placeholder="XOR key" style="width:100px;padding:4px 8px">
+                    <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encXOR()">XOR</button>
+                    <button class="btn btn-ghost btn-sm" onclick="SwissKnife.swapEnc()">⇅ Swap</button>
+                    <button class="btn btn-ghost btn-sm" onclick="SwissKnife.clearEnc()">Clear</button>
+                  </div>
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Output <span class="copyable" style="color:var(--accent);font-size:10px;cursor:pointer" onclick="copyText(document.getElementById('enc-output').value,'Output')">[copy]</span></label>
+                  <textarea id="enc-output" readonly placeholder="Result appears here..." style="min-height:180px;resize:vertical;color:var(--accent)"></textarea>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('b64enc')">Base64 Encode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('b64dec')">Base64 Decode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('urlenc')">URL Encode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('urldec')">URL Decode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('htmlenc')">HTML Encode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('htmldec')">HTML Decode</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('hexenc')">→ Hex</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('hexdec')">Hex →</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('binenc')">→ Binary</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('bindec')">Binary →</button>
+                <button class="btn btn-ghost btn-sm" onclick="SwissKnife.encode('rot13')">ROT13</button>
+              </div>
+            </div>
+
+            <!-- JWT -->
+            <div id="swiss-panel-jwt" style="display:none">
+              <div class="form-group">
+                <label class="form-label">JWT Token</label>
+                <textarea id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="min-height:80px;resize:vertical;word-break:break-all"></textarea>
+                <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="SwissKnife.decodeJWT()">Decode JWT</button>
+              </div>
+              <div id="jwt-output" style="margin-top:8px"><div class="empty-text">Paste a JWT token and click Decode</div></div>
+            </div>
+
+            <!-- CIDR -->
+            <div id="swiss-panel-cidr" style="display:none">
+              <div class="form-group">
+                <label class="form-label">CIDR Notation</label>
+                <div style="display:flex;gap:8px">
+                  <input id="cidr-input" type="text" placeholder="192.168.1.0/24" style="flex:1" oninput="SwissKnife.calcCIDR()">
+                  <button class="btn btn-primary btn-sm" onclick="SwissKnife.calcCIDR()">Calculate</button>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+                  <span style="font-size:10px;color:var(--text3)">Quick:</span>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cidr-input').value='10.0.0.0/8';SwissKnife.calcCIDR()">/8 Class A</button>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cidr-input').value='172.16.0.0/16';SwissKnife.calcCIDR()">/16 Class B</button>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cidr-input').value='192.168.0.0/24';SwissKnife.calcCIDR()">/24 Class C</button>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cidr-input').value='10.0.0.0/27';SwissKnife.calcCIDR()">/27 Subnet</button>
+                </div>
+              </div>
+              <div id="cidr-output" class="code-block" style="min-height:80px;margin-top:8px"><div class="empty-text">Enter a CIDR range above</div></div>
+            </div>
+
+            <!-- Regex -->
+            <div id="swiss-panel-regex" style="display:none">
+              <div class="grid-2" style="gap:12px;margin-bottom:12px">
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Pattern</label>
+                  <input id="regex-pattern" type="text" placeholder="e.g. (\d{1,3}\.){3}\d{1,3}" oninput="SwissKnife.testRegex()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Flags</label>
+                  <input id="regex-flags" type="text" value="gi" placeholder="g, i, m, s..." style="width:80px" oninput="SwissKnife.testRegex()">
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+                <span style="font-size:10px;color:var(--text3);line-height:2">Quick:</span>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value=String.raw`(\d{1,3}\.){3}\d{1,3}`;SwissKnife.testRegex()">IPv4</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value='[a-fA-F0-9]{64}';SwissKnife.testRegex()">SHA-256</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value='[a-fA-F0-9]{32}';SwissKnife.testRegex()">MD5</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value=String.raw`(CVE-\d{4}-\d{4,7})`;SwissKnife.testRegex()">CVE</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value=String.raw`([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})`;SwissKnife.testRegex()">Email</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value=String.raw`https?://[^\s]+`;SwissKnife.testRegex()">URL</button>
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('regex-pattern').value=String.raw`(T\d{4}(?:\.\d{3})?)`;SwissKnife.testRegex()">MITRE</button>
+              </div>
+              <div class="form-group" style="margin-bottom:8px">
+                <label class="form-label">Test Input</label>
+                <textarea id="regex-input" placeholder="Paste text to test against the regex pattern..." style="min-height:100px;resize:vertical" oninput="SwissKnife.testRegex()"></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:8px">
+                <label class="form-label">Highlighted Matches</label>
+                <div id="regex-highlight" class="code-block" style="min-height:40px;white-space:pre-wrap;word-break:break-all;font-size:12px"></div>
+              </div>
+              <div id="regex-output" style="min-height:40px"><div class="empty-text">Enter pattern and test input</div></div>
+            </div>
+
+            <!-- Epoch -->
+            <div id="swiss-panel-epoch" style="display:none">
+              <div class="grid-2" style="gap:16px;margin-bottom:12px">
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Unix Timestamp (seconds or ms)</label>
+                  <div style="display:flex;gap:8px">
+                    <input id="epoch-input" type="number" placeholder="1700000000" style="flex:1" oninput="SwissKnife.convertEpoch()">
+                    <button class="btn btn-ghost btn-sm" onclick="SwissKnife.epochNow()">Now</button>
+                  </div>
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Or pick a date/time</label>
+                  <div style="display:flex;gap:8px">
+                    <input id="date-input" type="datetime-local" style="flex:1" onchange="SwissKnife.dateToEpoch()">
+                    <button class="btn btn-ghost btn-sm" onclick="SwissKnife.dateToEpoch()">→ Epoch</button>
+                  </div>
+                </div>
+              </div>
+              <div id="epoch-output" class="code-block" style="min-height:100px"><div class="empty-text">Enter a timestamp or pick a date</div></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== HASH IDENTIFIER ===== -->
+      <div class="page" id="page-hash">
+        <div class="grid-2" style="gap:16px;height:calc(100vh - 120px)">
+          <div class="card" style="display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">Input Hashes</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('hash-input').value='';document.getElementById('hash-output').innerHTML='<div class=empty-text>Enter hash(es) to identify</div>'">Clear</button>
+                <button class="btn btn-primary btn-sm" onclick="HashIdentifier.identifyAll()">Identify</button>
+              </div>
+            </div>
+            <div class="card-body" style="flex:1;display:flex;flex-direction:column;gap:12px">
+              <label class="form-label">Paste one or more hashes (one per line)</label>
+              <textarea id="hash-input" placeholder="d41d8cd98f00b204e9800998ecf8427e&#10;da39a3ee5e6b4b0d3255bfef95601890afd80709&#10;e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&#10;$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy&#10;$6$rounds=5000$usesomesalt$..." style="flex:1;min-height:200px;resize:none" onkeydown="if(event.ctrlKey&&event.key==='Enter')HashIdentifier.identifyAll()"></textarea>
+              <div class="form-group" style="margin:0">
+                <label class="form-label">Reference — Common Hash Lengths</label>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+                  ${[['MD5 / NTLM','32 hex'],['SHA-1','40 hex'],['Tiger/192','48 hex'],['SHA-256','64 hex'],['SHA-384','96 hex'],['SHA-512','128 hex']].map(([n,l])=>`<div style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;cursor:pointer" onclick="document.getElementById('hash-input').value='';document.getElementById('hash-input').focus()"><div style="font-size:9px;color:var(--text3)">${n}</div><div style="font-size:11px;color:var(--accent)">${l}</div></div>`).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="card-header"><span class="card-title">Identification Results</span></div>
+            <div class="card-body" style="flex:1;overflow-y:auto" id="hash-output">
+              <div class="empty-state"><div class="empty-icon">⊠</div><div class="empty-text">Results appear here</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== URL ANALYZER ===== -->
+      <div class="page" id="page-urlanalyzer">
+        <div class="grid-2" style="gap:16px;height:calc(100vh - 120px)">
+          <div class="card" style="display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">Suspicious URL</span>
+              <button class="btn btn-primary btn-sm" onclick="URLAnalyzer.analyze()">Analyze</button>
+            </div>
+            <div class="card-body" style="flex:1;display:flex;flex-direction:column;gap:12px">
+              <div class="form-group" style="margin:0">
+                <label class="form-label">URL (defanged OK: hxxp://, [.], [at])</label>
+                <textarea id="url-input" placeholder="hxxps://paypa1[.]com/login?redirect=hxxps://evil-site[.]xyz&#10;&#10;or just:&#10;http://192.168.1.1/phishing.php?user=victim@mail.com" style="min-height:120px;resize:vertical" onkeydown="if(event.ctrlKey&&event.key==='Enter')URLAnalyzer.analyze()"></textarea>
+              </div>
+              <div class="form-group" style="margin:0">
+                <label class="form-label" style="margin-bottom:6px">Analysis Engine</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                  ${[
+                    ['DGA Detection','Shannon entropy analysis on domain'],
+                    ['Brand Impersonation','50+ brand keywords + homoglyphs'],
+                    ['Typosquatting','Digit/letter substitution check'],
+                    ['Suspicious TLD','List of abused TLD registry'],
+                    ['Open Redirect','Query param redirect detection'],
+                    ['Punycode/IDN','Unicode homograph detection'],
+                    ['Deep Subdomain','Subdomain chain depth analysis'],
+                    ['Credential URL','Username:password in URL check'],
+                  ].map(([t,d])=>`<div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px"><div style="font-size:10px;color:var(--accent)">✓ ${t}</div><div style="font-size:9px;color:var(--text3)">${d}</div></div>`).join('')}
+                </div>
+              </div>
+              <div style="padding:10px;background:var(--bg2);border-radius:4px;border:1px solid var(--border)">
+                <div style="font-size:9px;color:var(--text3)">⊡ Zero external API — all analysis runs locally in your browser. No URLs are sent to any server.</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="card-header"><span class="card-title">Analysis Results</span></div>
+            <div class="card-body" style="flex:1;overflow-y:auto" id="url-output">
+              <div class="empty-state"><div class="empty-icon">⊡</div><div class="empty-text">Paste a URL and click Analyze</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== THREAT ACTOR CARDS ===== -->
+      <div class="page" id="page-threatactor">
+        <div class="grid-2" style="gap:16px">
+          <div class="card" style="max-height:calc(100vh - 100px);overflow-y:auto">
+            <div class="card-header">
+              <span class="card-title">Profile Builder</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="ThreatActorCards.exportJSON()">Export JSON</button>
+                <button class="btn btn-primary btn-sm" onclick="ThreatActorCards.updatePreview()">Update Card</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="grid-2" style="gap:12px">
+                <div class="form-group">
+                  <label class="form-label">Actor Name / Group</label>
+                  <input type="text" id="ta-name" data-ta-field placeholder="e.g. APT28, Lazarus Group, Turla" oninput="ThreatActorCards.updatePreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Aliases (comma separated)</label>
+                  <input type="text" id="ta-aliases" data-ta-field placeholder="Fancy Bear, Sofacy, Iron Viking" oninput="ThreatActorCards.updatePreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Country of Origin</label>
+                  <select id="ta-country-select" data-ta-field onchange="ThreatActorCards.updatePreview()">
+                    <option>Unknown</option>
+                    <option>Russia</option>
+                    <option>China</option>
+                    <option>North Korea</option>
+                    <option>Iran</option>
+                    <option>USA</option>
+                    <option>Israel</option>
+                    <option>UK</option>
+                    <option>India</option>
+                    <option>Vietnam</option>
+                    <option>Pakistan</option>
+                    <option>Indonesia</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Primary Motivation</label>
+                  <select id="ta-motivation-select" data-ta-field onchange="ThreatActorCards.updatePreview()">
+                    <option>Financial</option>
+                    <option>Espionage</option>
+                    <option>Hacktivism</option>
+                    <option>Destructive</option>
+                    <option>Cyber Warfare</option>
+                    <option>Data Theft</option>
+                    <option>Ransomware</option>
+                    <option>Intellectual Property</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Threat Level</label>
+                  <select id="ta-threat-level" data-ta-field onchange="ThreatActorCards.updatePreview()">
+                    <option>Critical</option>
+                    <option selected>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confidence %</label>
+                  <input type="range" id="ta-confidence" data-ta-field min="10" max="100" value="70" oninput="ThreatActorCards.updatePreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">First Seen</label>
+                  <input type="text" id="ta-first-seen" data-ta-field placeholder="e.g. 2014, Q1 2021" oninput="ThreatActorCards.updatePreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last Active</label>
+                  <input type="text" id="ta-last-seen" data-ta-field placeholder="e.g. Active, 2024-Q3" oninput="ThreatActorCards.updatePreview()">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Target Sectors (comma separated)</label>
+                <input type="text" id="ta-targets" data-ta-field placeholder="Financial, Government, Defense, Energy, Healthcare" oninput="ThreatActorCards.updatePreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Known Tools & Malware (comma separated)</label>
+                <input type="text" id="ta-tools" data-ta-field placeholder="Cobalt Strike, X-Agent, BlackEnergy, PlugX" oninput="ThreatActorCards.updatePreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">ATT&CK TTPs (comma separated)</label>
+                <input type="text" id="ta-ttps" data-ta-field placeholder="T1566.001, T1059.001, T1083, T1071.001" oninput="ThreatActorCards.updatePreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="ta-description" data-ta-field placeholder="Brief description of the threat actor, notable campaigns, attribution notes..." style="min-height:80px" oninput="ThreatActorCards.updatePreview()"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">TLP</label>
+                <div style="display:flex;gap:8px">
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="ta-tlp" value="red" onchange="ThreatActorCards.updatePreview()"> <span class="tag tag-tlp-red">TLP:RED</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="ta-tlp" value="amber" checked onchange="ThreatActorCards.updatePreview()"> <span class="tag tag-tlp-amber">TLP:AMBER</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="ta-tlp" value="green" onchange="ThreatActorCards.updatePreview()"> <span class="tag tag-tlp-green">TLP:GREEN</span></label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="ta-tlp" value="clear" onchange="ThreatActorCards.updatePreview()"> <span class="tag tag-tlp-white">TLP:CLEAR</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Profile Card Preview</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="ThreatActorCards.exportJSON()">Export JSON</button>
+                <button class="btn btn-primary btn-sm" onclick="ThreatActorCards.exportPNG()">Export PNG</button>
+              </div>
+            </div>
+            <div class="card-body" style="display:flex;justify-content:center">
+              <div id="ta-card-preview" style="width:100%">
+                <div class="empty-state"><div class="empty-icon">◆</div><div class="empty-text">Fill in the form to generate a profile card</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CVSS CALCULATOR ===== -->
+      <div class="page" id="page-cvss">
+        <div class="grid-2" style="gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">CVSS v3.1 Metrics</span></div>
+            <div class="card-body">
+              <div class="section-title" style="margin-bottom:10px">Base Score Metrics</div>
+
+              <!-- Helper macro for metric groups -->
+              <div style="display:grid;gap:12px">
+                ${[
+                  ['Attack Vector', 'cvss-av', [['N','Network','Remotely exploitable over internet'],['A','Adjacent','Same network required'],['L','Local','Local access required'],['P','Physical','Physical access required']]],
+                  ['Attack Complexity', 'cvss-ac', [['L','Low','No special conditions'],['H','High','Specific conditions required']]],
+                  ['Privileges Required', 'cvss-pr', [['N','None','No auth required'],['L','Low','Low-privilege user'],['H','High','Admin privileges']]],
+                  ['User Interaction', 'cvss-ui', [['N','None','No user action needed'],['R','Required','User must take action']]],
+                  ['Scope', 'cvss-s', [['U','Unchanged','Impact limited to vuln component'],['C','Changed','Impact extends beyond component']]],
+                  ['Confidentiality', 'cvss-c', [['N','None','No C impact'],['L','Low','Some C impact'],['H','High','Total C loss']]],
+                  ['Integrity', 'cvss-i', [['N','None','No I impact'],['L','Low','Some I impact'],['H','High','Total I loss']]],
+                  ['Availability', 'cvss-a', [['N','None','No A impact'],['L','Low','Reduced performance'],['H','High','Total A loss']]],
+                ].map(([label, name, opts]) => `
+                  <div>
+                    <label class="form-label" style="margin-bottom:6px">${label}</label>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      ${opts.map((o,i) => `<label style="cursor:pointer;flex:1;min-width:80px" title="${o[2]}">
+                        <input type="radio" name="${name}" value="${o[0]}" ${i===0?'checked':''} onchange="CVSSCalc.calc()" style="display:none">
+                        <div class="cvss-opt" data-name="${name}" data-val="${o[0]}" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=${name}]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;${i===0?'border-color:var(--accent);background:var(--accent-dim);color:var(--accent)':''}">
+                          <div style="font-size:12px;font-weight:700;${i===0?'color:var(--accent)':'color:var(--text0)'}">${o[0]}</div>
+                          <div style="font-size:9px;color:var(--text3)">${o[1]}</div>
+                        </div>
+                      </label>`).join('')}
+                    </div>
+                  </div>`).join('')}
+              </div>
+
+              <div class="section-title" style="margin-top:16px;margin-bottom:10px">Temporal Score Metrics <span style="font-size:9px;color:var(--text3);font-weight:400">(optional)</span></div>
+              <div style="display:grid;gap:12px">
+                ${[
+                  ['Exploit Code Maturity (E)', 'cvss-e', [['X','ND','Not defined'],['U','Unproven','PoC unavailable'],['P','PoC','PoC public'],['F','Functional','Exploit public'],['H','High','Autonomous exploit']]],
+                  ['Remediation Level (RL)', 'cvss-rl', [['X','ND','Not defined'],['O','Official','Official fix'],['T','Temp','Temporary fix'],['W','Workaround','Workaround available'],['U','Unavailable','No fix available']]],
+                  ['Report Confidence (RC)', 'cvss-rc', [['X','ND','Not defined'],['U','Unknown','Unconfirmed'],['R','Reasonable','Reasonable confidence'],['C','Confirmed','Confirmed by vendor']]],
+                ].map(([label, name, opts]) => `
+                  <div>
+                    <label class="form-label" style="margin-bottom:6px">${label}</label>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      ${opts.map((o,i) => `<label style="cursor:pointer;flex:1;min-width:60px" title="${o[2]}">
+                        <input type="radio" name="${name}" value="${o[0]}" ${i===0?'checked':''} onchange="CVSSCalc.calc()" style="display:none">
+                        <div class="cvss-opt" data-name="${name}" data-val="${o[0]}" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.cvss-opt[data-name=${name}]').forEach(x=>x.classList.remove('active'));this.classList.add('active');CVSSCalc.calc()" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;text-align:center;transition:all .15s;cursor:pointer;${i===0?'border-color:var(--accent);background:var(--accent-dim);color:var(--accent)':''}">
+                          <div style="font-size:12px;font-weight:700;${i===0?'color:var(--accent)':'color:var(--text0)'}">${o[0]}</div>
+                          <div style="font-size:9px;color:var(--text3)">${o[1]}</div>
+                        </div>
+                      </label>`).join('')}
+                    </div>
+                  </div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col" style="gap:16px">
+            <div class="card">
+              <div class="card-header"><span class="card-title">Score</span></div>
+              <div class="card-body" style="text-align:center;padding:24px 16px">
+                <div id="cvss-score-display">
+                  <div style="font-size:56px;font-weight:800;color:var(--text3);font-family:var(--font-sans);line-height:1">–</div>
+                  <div style="font-size:12px;color:var(--text3);margin-top:8px">Select all base metrics</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">CVSS Vector String</span>
+                <span class="copyable" id="cvss-vector-copy" data-copy="" data-label="CVSS Vector" onclick="copyFromAttr(this)" style="cursor:pointer;color:var(--accent);font-size:10px">[copy]</span>
+              </div>
+              <div class="card-body">
+                <div id="cvss-vector-display" class="code-block" style="font-size:11px;word-break:break-all;min-height:40px;color:var(--accent)">–</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Score Breakdown</span></div>
+              <div class="card-body" id="cvss-breakdown">
+                <div class="empty-text">Score breakdown appears after calculating</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Severity Reference</span></div>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
+                  ${[['None','0.0','var(--text3)'],['Low','0.1–3.9','var(--accent)'],['Medium','4.0–6.9','var(--yellow)'],['High','7.0–8.9','var(--orange)'],['Critical','9.0–10','var(--red)']].map(([s,r,c])=>`<div style="border:1px solid ${c}44;border-radius:4px;padding:6px;text-align:center"><div style="font-size:10px;font-weight:700;color:${c}">${s}</div><div style="font-size:9px;color:var(--text3)">${r}</div></div>`).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
   </div><!-- /main -->
 </div><!-- /app -->
 
@@ -429,5 +866,6 @@
 <script src="js/ioc-engine.js"></script>
 <script src="js/file-engine.js"></script>
 <script src="js/app.js"></script>
+<script src="js/tools.js"></script>
 </body>
 </html>

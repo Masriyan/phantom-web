@@ -578,3 +578,36 @@ input[type=file] { display: none; }
 /* Progress bar */
 .progress-bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
+
+/* ---- TOOLS MODULE ---- */
+
+/* Swiss Knife tabs */
+.swiss-tab { border-bottom: 2px solid transparent; border-radius: 4px 4px 0 0; }
+.swiss-tab.active { border-bottom-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* CIDR / Epoch result rows */
+.cidr-result { display: flex; flex-direction: column; gap: 6px; }
+.cidr-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.cidr-row:last-child { border-bottom: none; }
+.cidr-key { font-size: 10px; color: var(--text3); min-width: 150px; text-transform: uppercase; letter-spacing: .5px; }
+.cidr-val { font-size: 12px; color: var(--text0); font-family: var(--font-mono); cursor: pointer; }
+.cidr-val:hover { color: var(--accent); }
+
+/* JWT sections */
+.jwt-section { margin-bottom: 14px; }
+.jwt-part-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+
+/* CVSS options */
+.cvss-opt { user-select: none; }
+.cvss-opt:hover { border-color: var(--accent) !important; }
+.cvss-opt.active { border-color: var(--accent) !important; background: var(--accent-dim) !important; }
+.cvss-opt.active > div:first-child { color: var(--accent) !important; }
+
+/* Hash Identifier reference grid */
+#hash-output .empty-state { padding: 40px; }
+
+/* URL Analyzer risk score */
+.url-score-bar { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+
+/* Threat Actor Card */
+#ta-card-preview { font-family: 'JetBrains Mono', monospace; }
