@@ -1,0 +1,226 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.soc{padding:1rem 0.25rem;font-family:var(--font-sans)}
+.hdr{text-align:center;font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.hdr-sub{text-align:center;font-size:9.5px;color:var(--color-text-tertiary);margin-bottom:12px;letter-spacing:0.03em}
+.sec-lbl{font-size:8px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.08em;padding:5px 0 3px 0;margin-left:72px;border-bottom:1px solid var(--color-border-tertiary);margin-bottom:3px}
+.tier{display:flex;align-items:stretch;gap:4px;margin:2px 0}
+.lbl{flex:0 0 68px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.lbl span{font-size:8px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.06em;text-align:right;line-height:1.3}
+.boxes{flex:1;display:flex;gap:3px}
+.bx{border-radius:7px;padding:6px 7px;font-size:10px;font-weight:500;text-align:center;line-height:1.3;cursor:pointer;transition:filter 0.15s;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.bx:hover{filter:brightness(0.88)}
+.bx .s{font-size:8px;opacity:0.65;line-height:1.2;margin-top:1px}
+.sep{height:1px;background:var(--color-border-tertiary);margin:5px 0 5px 72px;opacity:0.5}
+.darr{text-align:center;font-size:10px;color:var(--color-text-tertiary);margin:1px 0 1px 72px;letter-spacing:6px}
+.cross{display:flex;gap:3px;margin:6px 0}
+.cbx{flex:1;border-radius:7px;padding:7px 8px;font-size:10px;font-weight:500;text-align:center;cursor:pointer;transition:filter 0.15s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.cbx:hover{filter:brightness(0.88)}
+.cbx .s{font-size:8px;opacity:0.7;margin-top:1px}
+.leg-wrap{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--color-border-tertiary)}
+.lg{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--color-text-tertiary)}
+.dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.new-badge{font-size:7px;background:rgba(255,255,255,0.22);border-radius:3px;padding:1px 4px;margin-top:2px;display:inline-block;letter-spacing:0.03em}
+/* Tier colors */
+.am{background:#FAEEDA;border:1px solid #EF9F27;color:#633806}
+.gr{background:#F1EFE8;border:1px solid #B4B2A9;color:#444441}
+.pu{background:#EEEDFE;border:1px solid #AFA9EC;color:#3C3489}
+.st{background:#EBF1F8;border:1px solid #9BAFC4;color:#2D4A62}
+.bl{background:#E6F1FB;border:1px solid #85B7EB;color:#0C447C}
+.in{background:#534AB7;border:1px solid #3C3489;color:#EEEDFE}
+.in .s{color:#CECBF6;opacity:1}
+.in .new-badge{color:#CECBF6}
+.tl{background:#0F6E56;border:1px solid #085041;color:#E1F5EE}
+.tl .s{color:#9FE1CB;opacity:1}
+.tl .new-badge{color:#9FE1CB}
+.gn{background:#EAF3DE;border:1px solid #97C459;color:#173404}
+.rd{background:#FCEBEB;border:1px solid #F09595;color:#711F1F}
+.pk{background:#FBEAF0;border:1px solid #ED93B1;color:#4B1528}
+.co{background:#FAECE7;border:1px solid#D85A30;color:#4A1B0C}
+/* Dark */
+@media(prefers-color-scheme:dark){
+  .am{background:#412402;border-color:#BA7517;color:#FAC775}
+  .gr{background:#2C2C2A;border-color:#5F5E5A;color:#D3D1C7}
+  .pu{background:#26215C;border-color:#534AB7;color:#CECBF6}
+  .st{background:#1A2633;border-color:#4A6B8A;color:#9BAFC4}
+  .bl{background:#042C53;border-color:#185FA5;color:#B5D4F4}
+  .in{background:#3C3489;border-color:#7F77DD;color:#EEEDFE}
+  .tl{background:#085041;border-color:#1D9E75;color:#9FE1CB}
+  .gn{background:#173404;border-color:#639922;color:#C0DD97}
+  .rd{background:#501313;border-color:#E24B4A;color:#F7C1C1}
+  .pk{background:#4B1528;border-color:#D4537E;color:#F4C0D1}
+  .co{background:#4A1B0C;border-color:#D85A30;color:#F5C4B3}
+}
+</style>
+
+<div class="soc">
+<div class="hdr">Autonomous SOC — master design architecture</div>
+<div class="hdr-sub">Enterprise-grade MSSP deployment · Zero Trust · AI-native · Multi-tenant · Continuous improvement loop</div>
+
+<!-- Cross-cutting top -->
+<div class="cross">
+  <div class="cbx rd" onclick="sendPrompt('Bagaimana Zero Trust IAM dan identity fabric dirancang untuk SOC multi-tenant enterprise? Apa framework dan tools yang digunakan?')">
+    Zero Trust IAM &amp; identity fabric
+    <span class="s">MFA, PAM, least privilege, identity mesh</span>
+  </div>
+  <div class="cbx gr" onclick="sendPrompt('Apa fungsi API security gateway dan service mesh dalam SOC architecture? Bagaimana mutual TLS diimplementasikan?')">
+    API security gateway &amp; service mesh
+    <span class="s">mTLS, rate limiting, API-GW</span>
+  </div>
+  <div class="cbx co" onclick="sendPrompt('Bagaimana merancang disaster recovery dan geo-redundancy untuk SOC yang high availability? Berapa target RTO dan RPO?')">
+    DR / HA &amp; geo-redundancy
+    <span class="s">Active-active, RTO &lt;15min</span>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- Tier 0 -->
+<div class="sec-lbl">Tier 0 — External intelligence &amp; threat feeds</div>
+<div class="tier">
+  <div class="lbl"><span>External intel</span></div>
+  <div class="boxes">
+    <div class="bx am" onclick="sendPrompt('Bagaimana OSINT dan dark web monitoring diautomasi dalam SOC? Tools apa yang dipakai?')">OSINT &amp; dark web<span class="s">Automated scraping</span></div>
+    <div class="bx am" onclick="sendPrompt('Apa saja commercial threat intelligence feeds terbaik? Bagaimana integrasi STIX/TAXII?')">Commercial TI feeds<span class="s">STIX/TAXII protocol</span></div>
+    <div class="bx am" onclick="sendPrompt('Bagaimana CVE dan vulnerability database diintegrasikan real-time ke SOC pipeline?')">CVE / vuln databases<span class="s">NVD, Exploit-DB, EPSS</span></div>
+    <div class="bx am" onclick="sendPrompt('Apa itu ISAC dan ISAO? Bagaimana threat sharing antar organisasi bekerja?')">ISAC / ISAO<span class="s">Sector threat sharing</span></div>
+    <div class="bx am" onclick="sendPrompt('Bagaimana IP reputation, geolocation, dan ASN context digunakan dalam SOC enrichment?')">IP &amp; domain reputation<span class="s">Geo, ASN, passive DNS</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 1 -->
+<div class="sec-lbl">Tier 1 — Data collection &amp; ingestion (universal connector layer)</div>
+<div class="tier">
+  <div class="lbl"><span>Log sources</span></div>
+  <div class="boxes">
+    <div class="bx gr" onclick="sendPrompt('Apa saja network logs yang dikumpulkan SOC? NetFlow, PCAP, DNS, proxy, DPI?')">Network &amp; perimeter<span class="s">NetFlow, PCAP, DNS, proxy</span></div>
+    <div class="bx gr" onclick="sendPrompt('Bagaimana security appliance logs (FW, IDS, WAF, DLP) diingest ke SOC?')">Security appliances<span class="s">FW, IDS/IPS, WAF, DLP</span></div>
+    <div class="bx gr" onclick="sendPrompt('Bagaimana cloud logs dari AWS CloudTrail, Azure Monitor, GCP dikumpulkan secara otomatis?')">Cloud platforms<span class="s">AWS / Azure / GCP</span></div>
+    <div class="bx gr" onclick="sendPrompt('Bagaimana EDR agent dan endpoint logs diintegrasikan ke SOC pipeline secara real-time?')">Endpoints &amp; EDR<span class="s">Agent, sysmon, EDR API</span></div>
+    <div class="bx gr" onclick="sendPrompt('Bagaimana application logs dan API logs dikumpulkan dan dinormalisasi di SOC?')">Applications &amp; APIs<span class="s">Syslog, webhooks, SDK</span></div>
+    <div class="bx gr" onclick="sendPrompt('Bagaimana OT, IoT, dan SCADA dimonitor secara aman di SOC tanpa mengganggu operasional?')">OT / IoT / SCADA<span class="s">Passive tap + active poll</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 2 -->
+<div class="sec-lbl">Tier 2 — AI/ML processing pipeline (new: UEBA + deception + ML feedback)</div>
+<div class="tier">
+  <div class="lbl"><span>AI processing</span></div>
+  <div class="boxes">
+    <div class="bx pu" onclick="sendPrompt('Bagaimana AI melakukan parsing dan normalisasi log dari ratusan format berbeda ke schema yang seragam?')">AI parser &amp; normalizer<span class="s">CEF/ECS/OCSF mapping</span></div>
+    <div class="bx pu" onclick="sendPrompt('Bagaimana AI enrichment engine menambahkan konteks threat intelligence ke setiap event secara real-time?')">AI enrichment engine<span class="s">TI + asset + identity ctx</span></div>
+    <div class="bx pu" onclick="sendPrompt('Apa itu UEBA? Bagaimana mendeteksi insider threat dan compromised accounts dengan behavioral analytics?')">UEBA engine<span class="s">Baseline + anomaly score</span></div>
+    <div class="bx pu" onclick="sendPrompt('Bagaimana supervised dan unsupervised ML digunakan untuk deteksi advanced threats dan APT di SOC?')">ML correlation &amp; detection<span class="s">Supervised + unsupervised</span></div>
+    <div class="bx pu" onclick="sendPrompt('Apa itu deception technology, honeypot, dan honeytoken dalam strategi SOC? Bagaimana implementasinya?')">Deception layer<span class="s">Honeypots, honeytokens</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 3 -->
+<div class="sec-lbl">Tier 3 — Data lake &amp; tiered storage (new: ML training feedback loop)</div>
+<div class="tier">
+  <div class="lbl"><span>Storage</span></div>
+  <div class="boxes">
+    <div class="bx st" onclick="sendPrompt('Apa itu hot storage dalam SOC data lake? Teknologi apa yang digunakan untuk real-time query?')">Hot storage<span class="s">Real-time, &lt;72h, NVMe</span></div>
+    <div class="bx st" onclick="sendPrompt('Apa itu warm storage dalam SOC? Berapa lama data disimpan dan bagaimana indexed search bekerja?')">Warm storage<span class="s">7–30 days, indexed</span></div>
+    <div class="bx st" onclick="sendPrompt('Bagaimana cold/archive storage didesain untuk memenuhi compliance SOC2, ISO27001, GDPR?')">Cold / compliance archive<span class="s">1–7 yr, encrypted, WORM</span></div>
+    <div class="bx st" onclick="sendPrompt('Bagaimana ML model training pipeline menggunakan data historis SOC untuk continuous improvement?')">ML training pipeline<span class="s">Feedback loop, retraining</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 4 -->
+<div class="sec-lbl">Tier 4 — Multi-tenant SIEM (isolated namespaces, custom rules per tenant)</div>
+<div class="tier">
+  <div class="lbl"><span>Tenant SIEMs</span></div>
+  <div class="boxes">
+    <div class="bx bl" onclick="sendPrompt('Bagaimana tenant namespace isolation diterapkan di SIEM multi-tenant? Data plane dan control plane separation?')">SIEM 1 · Client A<span class="s">Isolated namespace</span></div>
+    <div class="bx bl" onclick="sendPrompt('Bagaimana custom detection rules dan thresholds dikonfigurasi per tenant SIEM?')">SIEM 2 · Client B<span class="s">Custom detection rules</span></div>
+    <div class="bx bl" onclick="sendPrompt('Bagaimana compliance requirements berbeda tiap tenant dihandle di SIEM yang sama?')">SIEM 3 · Client C<span class="s">Compliance templates</span></div>
+    <div class="bx bl" onclick="sendPrompt('Bagaimana arsitektur SIEM multi-tenant discale dari 4 ke 100 tenant tanpa degradasi performa?')">SIEM N · Client D…<span class="s">Scalable to N tenants</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 5 -->
+<div class="sec-lbl">Tier 5 — AI orchestration &amp; triage (new: case mgmt + threat hunting + dedup)</div>
+<div class="tier">
+  <div class="lbl"><span>Orchestration</span></div>
+  <div class="boxes">
+    <div class="bx in" onclick="sendPrompt('Bagaimana AI melakukan auto-triage dan deduplication alert untuk mengurangi alert fatigue di SOC?')">Auto triage &amp; dedup<span class="new-badge">↓ alert fatigue</span><span class="s">Event correlation, dedup</span></div>
+    <div class="bx in" onclick="sendPrompt('Bagaimana AI severity scoring menggabungkan CVSS, threat context, dan business impact untuk prioritisasi?')">AI severity scoring<span class="new-badge">CVSS + context + ML</span><span class="s">Business risk weighting</span></div>
+    <div class="bx in" onclick="sendPrompt('Bagaimana case management system terintegrasi dengan SOC? Apakah bisa connect ke ServiceNow, Jira?')">Case management<span class="new-badge">Auto-ticket + SLA</span><span class="s">ServiceNow / Jira API</span></div>
+    <div class="bx in" onclick="sendPrompt('Apa itu AI playbook engine dalam SOAR? Bagaimana playbook dibuat dan dieksekusi secara otomatis?')">AI playbook engine<span class="new-badge">Dynamic response</span><span class="s">Conditional auto-runs</span></div>
+    <div class="bx in" onclick="sendPrompt('Bagaimana threat hunting module bekerja dalam autonomous SOC? Apa perbedaan proactive vs reactive hunting?')">Threat hunting<span class="new-badge">Proactive search</span><span class="s">IOC / hypothesis-led</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 6 -->
+<div class="sec-lbl">Tier 6 — Response, containment &amp; forensics (new: evidence vault + tiered escalation)</div>
+<div class="tier">
+  <div class="lbl"><span>Response</span></div>
+  <div class="boxes">
+    <div class="bx tl" onclick="sendPrompt('Bagaimana SOAR mengeksekusi automated response secara tenant-specific di SOC?')">SOAR automation<span class="new-badge">Per-tenant playbook</span><span class="s">Webhook, API, script</span></div>
+    <div class="bx tl" onclick="sendPrompt('Bagaimana active containment dilakukan secara otomatis — isolasi host, block IP, revoke token — dalam SOC?')">Active containment<span class="new-badge">Auto-isolate</span><span class="s">Block, quarantine, kill</span></div>
+    <div class="bx tl" onclick="sendPrompt('Bagaimana digital forensics dan incident response dilakukan setelah SOC mendeteksi insiden?')">Forensics &amp; IR<span class="new-badge">Timeline &amp; artifact</span><span class="s">Memory, disk, network</span></div>
+    <div class="bx tl" onclick="sendPrompt('Apa itu digital evidence vault dan bagaimana chain of custody dijaga dalam SOC?')">Evidence vault<span class="new-badge">Chain of custody</span><span class="s">Tamper-proof storage</span></div>
+    <div class="bx tl" onclick="sendPrompt('Bagaimana tiered analyst escalation L1, L2, L3 bekerja dalam autonomous SOC?')">Tiered escalation<span class="new-badge">L1 → L2 → L3</span><span class="s">Auto-route by severity</span></div>
+  </div>
+</div>
+
+<div class="darr">↓ ↓ ↓ ↓ ↓</div>
+
+<!-- Tier 7 -->
+<div class="sec-lbl">Tier 7 — Governance, visibility &amp; continuous improvement (new: MTTD/MTTR + CI loop)</div>
+<div class="tier">
+  <div class="lbl"><span>Governance</span></div>
+  <div class="boxes">
+    <div class="bx gn" onclick="sendPrompt('Bagaimana compliance reporting otomatis untuk ISO27001, SOC2, GDPR, PCI-DSS dilakukan dari data SOC?')">Compliance reporting<span class="s">ISO/SOC2/GDPR/PCI-DSS</span></div>
+    <div class="bx gn" onclick="sendPrompt('Apa KPI dan SLA yang diukur dalam SOC? Berapa target MTTD, MTTR, dan MTTC yang ideal?')">SLA / KPI dashboard<span class="s">MTTD, MTTR, MTTC, FCR</span></div>
+    <div class="bx gn" onclick="sendPrompt('Bagaimana tenant self-service portal memberikan visibility ke klien MSSP SOC?')">Tenant self-service portal<span class="s">Real-time client view</span></div>
+    <div class="bx gn" onclick="sendPrompt('Apa yang ditampilkan di executive security dashboard untuk C-level reporting dari SOC?')">Executive reporting<span class="s">Risk posture, trends, ROI</span></div>
+    <div class="bx gn" onclick="sendPrompt('Bagaimana continuous improvement loop bekerja dalam autonomous SOC — dari deteksi ke model retraining?')">Continuous improvement<span class="s">AI feedback, rule tuning</span></div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- Cross-cutting bottom -->
+<div class="cross">
+  <div class="cbx pk" onclick="sendPrompt('Bagaimana asset management dan CMDB terintegrasi dengan SOC untuk attack surface visibility dan enrichment?')">
+    Asset management &amp; CMDB
+    <span class="s">Attack surface &amp; enrichment context</span>
+  </div>
+  <div class="cbx pk" onclick="sendPrompt('Apa itu CSPM? Bagaimana cloud security posture management mendeteksi misconfiguration secara otomatis?')">
+    CSPM — cloud security posture
+    <span class="s">Misconfiguration &amp; drift detection</span>
+  </div>
+  <div class="cbx pk" onclick="sendPrompt('Bagaimana vulnerability management dan patch prioritization terintegrasi dengan SOC untuk risk-based remediation?')">
+    Vulnerability management
+    <span class="s">Risk-based patch prioritization</span>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="leg-wrap">
+  <div class="lg"><div class="dot" style="background:#EF9F27"></div>Threat intelligence</div>
+  <div class="lg"><div class="dot" style="background:#888780"></div>Log sources</div>
+  <div class="lg"><div class="dot" style="background:#7F77DD"></div>AI/ML processing</div>
+  <div class="lg"><div class="dot" style="background:#9BAFC4"></div>Data lake</div>
+  <div class="lg"><div class="dot" style="background:#378ADD"></div>Tenant SIEMs</div>
+  <div class="lg"><div class="dot" style="background:#534AB7"></div>AI orchestration</div>
+  <div class="lg"><div class="dot" style="background:#0F6E56"></div>Response layer</div>
+  <div class="lg"><div class="dot" style="background:#639922"></div>Governance</div>
+  <div class="lg"><div class="dot" style="background:#ED93B1"></div>Cross-cutting</div>
+</div>
+</div>
