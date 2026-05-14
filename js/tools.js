@@ -630,6 +630,545 @@ const ThreatActorCards = {
 };
 
 // ============================================================
+// 6. YARA RULE EDITOR
+// ============================================================
+
+const YaraEditor = {
+  // Built-in rule library based on existing YARA-lite patterns from file-engine.js
+  builtInRules: [
+    {
+      name: 'Mimikatz_Detection',
+      meta: { author: 'PHANTOM Team', description: 'Detects Mimikatz credential theft tool strings', severity: 'critical', hash: 'builtin-001' },
+      source: `rule Mimikatz_Detection {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects Mimikatz credential theft tool strings"
+        severity = "critical"
+        reference = "https://github.com/gentilkiwi/mimikatz"
+    
+    strings:
+        $s1 = "sekurlsa" nocase
+        $s2 = "kerberos" nocase
+        $s3 = "wdigest" nocase
+        $s4 = "lsadump" nocase
+        $s5 = "privilege::debug" nocase
+    
+    condition:
+        any of them
+}`
+    },
+    {
+      name: 'CobaltStrike_Beacon',
+      meta: { author: 'PHANTOM Team', description: 'Detects Cobalt Strike beacon artifacts', severity: 'critical', hash: 'builtin-002' },
+      source: `rule CobaltStrike_Beacon {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects Cobalt Strike beacon artifacts"
+        severity = "critical"
+        reference = "https://www.cobaltstrike.com"
+    
+    strings:
+        $s1 = "ReflectiveDll" nocase
+        $s2 = "beacon.x64" nocase
+        $s3 = "cobaltstrike" nocase
+        $s4 = "sleeptime" nocase
+        $s5 = "jitter" nocase
+    
+    condition:
+        2 of them
+}`
+    },
+    {
+      name: 'PowerShell_DownloadCradle',
+      meta: { author: 'PHANTOM Team', description: 'Detects PowerShell download cradle patterns', severity: 'high', hash: 'builtin-003' },
+      source: `rule PowerShell_DownloadCradle {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects PowerShell download cradle patterns"
+        severity = "high"
+    
+    strings:
+        $ps1 = /powershell\\s+-[Ee][Nn][Cc](?:[Oo][Dd][Ee])?/ 
+        $ps2 = "IEX("
+        $ps3 = "DownloadString"
+        $ps4 = "WebClient"
+        $ps5 = "FromBase64String"
+    
+    condition:
+        any of them
+}`
+    },
+    {
+      name: 'Meterpreter_Payload',
+      meta: { author: 'PHANTOM Team', description: 'Detects Metasploit Meterpreter payload strings', severity: 'critical', hash: 'builtin-004' },
+      source: `rule Meterpreter_Payload {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects Metasploit Meterpreter payload strings"
+        severity = "critical"
+        reference = "https://www.metasploit.com"
+    
+    strings:
+        $s1 = "meterpreter" nocase
+        $s2 = "ReflectiveLoader" nocase
+        $s3 = "stdapi_" nocase
+        $s4 = "priv_" nocase
+        $s5 = "kiwi_" nocase
+    
+    condition:
+        any of them
+}`
+    },
+    {
+      name: 'AntiVM_Detection',
+      meta: { author: 'PHANTOM Team', description: 'Detects anti-VM and anti-debugging strings', severity: 'medium', hash: 'builtin-005' },
+      source: `rule AntiVM_Detection {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects anti-VM and anti-debugging strings"
+        severity = "medium"
+    
+    strings:
+        $vm1 = "vmware" nocase
+        $vm2 = "virtualbox" nocase
+        $vm3 = "vbox" nocase
+        $vm4 = "qemu" nocase
+        $dbg1 = "OllyDbg" nocase
+        $dbg2 = "x64dbg" nocase
+        $dbg3 = "ida.exe" nocase
+        $dbg4 = "procmon" nocase
+    
+    condition:
+        2 of them
+}`
+    },
+    {
+      name: 'Ransomware_Extensions',
+      meta: { author: 'PHANTOM Team', description: 'Detects common ransomware file extension patterns', severity: 'critical', hash: 'builtin-006' },
+      source: `rule Ransomware_Extensions {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects common ransomware file extension patterns"
+        severity = "critical"
+    
+    strings:
+        $ext1 = ".locked" nocase
+        $ext2 = ".encrypted" nocase
+        $ext3 = ".crypted" nocase
+        $ext4 = ".crypt" nocase
+        $ext5 = ".enc" nocase
+        $ransom1 = "YOUR_FILES_ARE_ENCRYPTED" nocase
+        $ransom2 = "decrypt" nocase
+    
+    condition:
+        any of them
+}`
+    },
+    {
+      name: 'Process_Injection_API',
+      meta: { author: 'PHANTOM Team', description: 'Detects Windows API calls commonly used for process injection', severity: 'high', hash: 'builtin-007' },
+      source: `rule Process_Injection_API {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects Windows API calls commonly used for process injection"
+        severity = "high"
+    
+    strings:
+        $api1 = "VirtualAllocEx"
+        $api2 = "WriteProcessMemory"
+        $api3 = "CreateRemoteThread"
+        $api4 = "NtCreateThreadEx"
+        $api5 = "RtlCreateUserThread"
+    
+    condition:
+        2 of them
+}`
+    },
+    {
+      name: 'Tor_Onion_Address',
+      meta: { author: 'PHANTOM Team', description: 'Detects Tor .onion addresses in text', severity: 'medium', hash: 'builtin-008' },
+      source: `rule Tor_Onion_Address {
+    meta:
+        author = "PHANTOM Team"
+        description = "Detects Tor .onion addresses in text"
+        severity = "medium"
+    
+    strings:
+        $onion = /[a-z2-7]{16,56}\\.onion/
+    
+    condition:
+        $onion
+}`
+    }
+  ],
+
+  init() {
+    this.renderLibrary();
+  },
+
+  renderLibrary() {
+    const container = document.getElementById('yara-library');
+    if (!container) return;
+    
+    let html = '<div style="display:flex;flex-direction:column;gap:6px">';
+    this.builtInRules.forEach((rule, idx) => {
+      const severityColor = rule.meta.severity === 'critical' ? 'var(--red)' : 
+                           rule.meta.severity === 'high' ? 'var(--orange)' : 
+                           rule.meta.severity === 'medium' ? 'var(--yellow)' : 'var(--text3)';
+      html += `
+        <div style="padding:8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s" 
+             onmouseover="this.style.borderColor='${severityColor}';this.style.background='${severityColor}11'" 
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'"
+             onclick="YaraEditor.loadBuiltInRule(${idx})">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:11px;font-weight:700;color:${severityColor}">${rule.name}</span>
+            <span style="font-size:9px;padding:2px 6px;border-radius:3px;background:${severityColor}22;color:${severityColor}">${rule.meta.severity.toUpperCase()}</span>
+          </div>
+          <div style="font-size:9px;color:var(--text3)">${rule.meta.description}</div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  },
+
+  loadBuiltInRule(idx) {
+    const rule = this.builtInRules[idx];
+    if (!rule) return;
+    
+    document.getElementById('yara-rule-name').value = rule.name;
+    document.getElementById('yara-rule-meta').value = JSON.stringify(rule.meta, null, 2);
+    document.getElementById('yara-rule-source').value = rule.source;
+    showToast(`Loaded built-in rule: ${rule.name}`);
+  },
+
+  newRule() {
+    document.getElementById('yara-rule-name').value = '';
+    document.getElementById('yara-rule-meta').value = '{}';
+    document.getElementById('yara-rule-source').value = `rule New_Rule {
+    meta:
+        author = "Your Name"
+        description = "Rule description here"
+        severity = "medium"
+    
+    strings:
+        $string1 = "example_string"
+    
+    condition:
+        $string1
+}`;
+    document.getElementById('yara-test-input').value = '';
+    document.getElementById('yara-results').innerHTML = '<div class="empty-state"><div class="empty-icon">⊣</div><div class="empty-text">Ready for a new rule.</div></div>';
+    document.getElementById('yara-result-badge').textContent = '–';
+    showToast('New rule template loaded');
+  },
+
+  loadExample() {
+    this.loadBuiltInRule(2); // Load PowerShell Download Cradle as example
+  },
+
+  validateSyntax() {
+    const source = document.getElementById('yara-rule-source').value.trim();
+    const name = document.getElementById('yara-rule-name').value.trim();
+    
+    if (!source) {
+      showToast('No rule source to validate', 'warning');
+      return;
+    }
+
+    // Basic syntax validation (browser-based, no external YARA engine)
+    const errors = [];
+    
+    // Check for required sections
+    if (!/rule\s+\w+/i.test(source)) {
+      errors.push('Missing rule declaration: rule <name>');
+    }
+    if (!/strings:/i.test(source)) {
+      errors.push('Missing strings section');
+    }
+    if (!/condition:/i.test(source)) {
+      errors.push('Missing condition section');
+    }
+    
+    // Check for balanced braces
+    const openBraces = (source.match(/\{/g) || []).length;
+    const closeBraces = (source.match(/\}/g) || []).length;
+    if (openBraces !== closeBraces) {
+      errors.push(`Unbalanced braces: ${openBraces} opening, ${closeBraces} closing`);
+    }
+    
+    // Check for string declarations
+    const stringDecls = source.match(/\$[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
+    if (stringDecls.length === 0 && !/condition:\s*(?:all|any|none)\s+of\s+them/i.test(source)) {
+      errors.push('No string variables declared');
+    }
+    
+    // Check condition references defined strings
+    const conditionSection = source.split(/condition:/i)[1] || '';
+    const conditionStrings = conditionSection.match(/\$[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
+    conditionStrings.forEach(str => {
+      if (!source.includes(`${str} =`)) {
+        errors.push(`String variable ${str} referenced but not defined`);
+      }
+    });
+
+    if (errors.length > 0) {
+      document.getElementById('yara-results').innerHTML = `
+        <div style="padding:12px;background:var(--red)11;border:1px solid var(--red);border-radius:6px">
+          <div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ Syntax Issues Found</div>
+          <ul style="margin:0;padding-left:16px;font-size:11px;color:var(--text0)">
+            ${errors.map(e => `<li>${e}</li>`).join('')}
+          </ul>
+        </div>`;
+      document.getElementById('yara-result-badge').textContent = `${errors.length} issue(s)`;
+      showToast(`Found ${errors.length} syntax issue(s)`, 'error');
+    } else {
+      document.getElementById('yara-results').innerHTML = `
+        <div style="padding:12px;background:var(--accent)11;border:1px solid var(--accent);border-radius:6px;text-align:center">
+          <div style="color:var(--accent);font-weight:700;font-size:14px">✓ Syntax Looks Valid</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">Basic structure validated (full validation requires YARA engine)</div>
+        </div>`;
+      document.getElementById('yara-result-badge').textContent = 'Valid';
+      showToast('Rule syntax looks valid');
+    }
+  },
+
+  testRule() {
+    const source = document.getElementById('yara-rule-source').value.trim();
+    const testInput = document.getElementById('yara-test-input').value;
+    
+    if (!source) {
+      showToast('Please enter a YARA rule first', 'warning');
+      return;
+    }
+    if (!testInput) {
+      showToast('Please provide test input (text or upload a file)', 'warning');
+      return;
+    }
+
+    // Convert YARA-like patterns to JavaScript regex for browser-based testing
+    const hits = [];
+    const startTime = performance.now();
+    
+    try {
+      // Extract strings section
+      const stringsMatch = source.match(/strings:\s*([\s\S]*?)(?=condition:|$)/i);
+      const conditionMatch = source.match(/condition:\s*([\s\S]*)/i);
+      
+      if (!stringsMatch || !conditionMatch) {
+        throw new Error('Could not parse strings or condition section');
+      }
+      
+      const stringsSection = stringsMatch[1];
+      const conditionSection = conditionMatch[1].trim();
+      
+      // Parse string definitions
+      const stringDefs = {};
+      const stringRegex = /\$(\w+)\s*=\s*(?:\/(.+?)\/|"(.*?)")(\s+nocase)?/g;
+      let match;
+      
+      while ((match = stringRegex.exec(stringsSection)) !== null) {
+        const [, name, regexStr, literalStr, nocase] = match;
+        let pattern;
+        
+        if (regexStr) {
+          // It's a regex pattern
+          pattern = new RegExp(regexStr, nocase ? 'gi' : 'g');
+        } else if (literalStr) {
+          // It's a literal string
+          pattern = new RegExp(literalStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), nocase ? 'gi' : 'g');
+        }
+        
+        if (pattern) {
+          stringDefs[name] = { pattern, matches: [] };
+        }
+      }
+      
+      // Test each string against input
+      Object.entries(stringDefs).forEach(([name, def]) => {
+        def.pattern.lastIndex = 0;
+        let m;
+        while ((m = def.pattern.exec(testInput)) !== null) {
+          def.matches.push({
+            offset: m.index,
+            value: m[0],
+            length: m[0].length
+          });
+        }
+      });
+      
+      // Evaluate condition (simplified - supports: all/any/none of them, specific strings, count operators)
+      const matchedStrings = Object.entries(stringDefs).filter(([, def]) => def.matches.length > 0);
+      const totalStrings = Object.keys(stringDefs).length;
+      const matchedCount = matchedStrings.length;
+      
+      let conditionMet = false;
+      
+      if (/all\s+of\s+them/i.test(conditionSection)) {
+        conditionMet = matchedCount === totalStrings;
+      } else if (/any\s+of\s+them/i.test(conditionSection)) {
+        conditionMet = matchedCount > 0;
+      } else if (/none\s+of\s+them/i.test(conditionSection)) {
+        conditionMet = matchedCount === 0;
+      } else if (/(\d+)\s+of\s+them/i.test(conditionSection)) {
+        const required = parseInt(conditionSection.match(/(\d+)\s+of\s+them/i)[1]);
+        conditionMet = matchedCount >= required;
+      } else {
+        // Check for specific string references like: $string1 or $string1 and $string2
+        const referencedStrings = conditionSection.match(/\$\w+/g) || [];
+        if (referencedStrings.length > 0) {
+          conditionMet = referencedStrings.every(s => stringDefs[s.substring(1)]?.matches.length > 0);
+        } else {
+          // Default: any match
+          conditionMet = matchedCount > 0;
+        }
+      }
+      
+      const elapsed = ((performance.now() - startTime) / 1000).toFixed(3);
+      
+      // Render results
+      if (conditionMet) {
+        let html = `<div style="padding:12px;background:var(--accent)11;border:1px solid var(--accent);border-radius:6px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="color:var(--accent);font-weight:700">✓ Rule Matched!</span>
+            <span style="font-size:10px;color:var(--text3)">Test completed in ${elapsed}s</span>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">${matchedCount} of ${totalStrings} string(s) matched</div>
+        </div>`;
+        
+        matchedStrings.forEach(([name, def]) => {
+          html += `<div style="margin-bottom:12px">
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">$${name} (${def.matches.length} match${def.matches.length !== 1 ? 'es' : ''})</div>`;
+          
+          def.matches.slice(0, 5).forEach((m, i) => {
+            const context = testInput.substring(Math.max(0, m.offset - 20), Math.min(testInput.length, m.offset + m.length + 20));
+            const highlighted = context.replace(new RegExp(m.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), 
+              `<mark style="background:var(--accent);color:#000;padding:0 2px;border-radius:2px">${m.value}</mark>`);
+            html += `<div style="font-size:10px;font-family:monospace;background:var(--bg1);padding:4px 6px;border-radius:4px;margin-bottom:4px;overflow-x:auto">
+              ...${highlighted}... <span style="color:var(--text3)">[offset: ${m.offset}]</span>
+            </div>`;
+          });
+          
+          if (def.matches.length > 5) {
+            html += `<div style="font-size:9px;color:var(--text3);text-align:center">+ ${def.matches.length - 5} more match(es)</div>`;
+          }
+          
+          html += `</div>`;
+        });
+        
+        document.getElementById('yara-results').innerHTML = html;
+        document.getElementById('yara-result-badge').textContent = `${matchedCount} match${matchedCount !== 1 ? 'es' : ''}`;
+        showToast(`Rule matched! Found ${matchedCount} string(s)`, 'success');
+      } else {
+        document.getElementById('yara-results').innerHTML = `
+          <div style="padding:12px;background:var(--bg1);border:1px solid var(--border);border-radius:6px;text-align:center">
+            <div style="color:var(--text3);font-weight:700">✗ No Match</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:4px">Condition not satisfied (${matchedCount}/${totalStrings} strings matched)</div>
+          </div>`;
+        document.getElementById('yara-result-badge').textContent = 'No match';
+        showToast('Rule did not match the test input', 'info');
+      }
+      
+    } catch (err) {
+      document.getElementById('yara-results').innerHTML = `
+        <div style="padding:12px;background:var(--red)11;border:1px solid var(--red);border-radius:6px">
+          <div style="color:var(--red);font-weight:700">✗ Test Error</div>
+          <div style="font-size:10px;color:var(--text0);margin-top:4px">${err.message}</div>
+        </div>`;
+      document.getElementById('yara-result-badge').textContent = 'Error';
+      showToast('Test failed: ' + err.message, 'error');
+    }
+  },
+
+  exportRule() {
+    const name = document.getElementById('yara-rule-name').value.trim() || 'custom_rule';
+    const source = document.getElementById('yara-rule-source').value.trim();
+    
+    if (!source) {
+      showToast('No rule to export', 'warning');
+      return;
+    }
+    
+    const blob = new Blob([source], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name}.yar`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${name}.yar`);
+  },
+
+  importRule() {
+    document.getElementById('yara-import-file').click();
+  },
+
+  handleImport(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      document.getElementById('yara-rule-source').value = content;
+      
+      // Try to extract rule name
+      const nameMatch = content.match(/rule\s+(\w+)/i);
+      if (nameMatch) {
+        document.getElementById('yara-rule-name').value = nameMatch[1];
+      }
+      
+      // Try to extract meta section
+      const metaMatch = content.match(/meta:\s*([\s\S]*?)(?=strings:|condition:|$)/i);
+      if (metaMatch) {
+        const metaText = metaMatch[1];
+        const metaObj = {};
+        const metaLines = metaText.split('\n');
+        metaLines.forEach(line => {
+          const kv = line.match(/(\w+)\s*=\s*["']?([^"'\n]+)["']?/);
+          if (kv) {
+            metaObj[kv[1].trim()] = kv[2].trim();
+          }
+        });
+        if (Object.keys(metaObj).length > 0) {
+          document.getElementById('yara-rule-meta').value = JSON.stringify(metaObj, null, 2);
+        }
+      }
+      
+      showToast(`Imported ${file.name}`);
+    };
+    reader.readAsText(file);
+    input.value = '';
+  },
+
+  loadTestFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      document.getElementById('yara-test-input').value = content.substring(0, 50000); // Limit to 50KB for display
+      if (content.length > 50000) {
+        showToast(`Loaded ${file.name} (truncated to 50KB for display)`, 'info');
+      } else {
+        showToast(`Loaded ${file.name} (${content.length} bytes)`);
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
+  },
+
+  clearTest() {
+    document.getElementById('yara-test-input').value = '';
+    document.getElementById('yara-results').innerHTML = '<div class="empty-state"><div class="empty-icon">⊣</div><div class="empty-text">Test input cleared.</div></div>';
+    document.getElementById('yara-result-badge').textContent = '–';
+    showToast('Test input cleared');
+  }
+};
+
+// ============================================================
 // 5. CVSS v3.1 CALCULATOR
 // ============================================================
 
@@ -738,4 +1277,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Epoch default
   SwissKnife.epochNow();
+
+  // Initialize YARA Editor library
+  if (typeof YaraEditor !== 'undefined') {
+    YaraEditor.renderLibrary();
+  }
 });

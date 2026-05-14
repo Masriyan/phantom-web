@@ -26,6 +26,7 @@ const PAGE_META = {
   urlanalyzer: { title: 'URL Analyzer', desc: 'Phishing detection · Entropy · Brand impersonation · Homoglyphs — zero API' },
   threatactor: { title: 'Threat Actor Cards', desc: 'Build and export professional threat actor profile cards' },
   cvss: { title: 'CVSS Calculator', desc: 'CVSS v3.1 Base & Temporal Score Calculator — offline' },
+  yara: { title: 'YARA Rule Editor', desc: 'Create, edit, validate, and test YARA rules — syntax highlighting & built-in library' },
 };
 
 // ---- Navigation ----
@@ -47,6 +48,7 @@ function showPage(name) {
   if (name === 'swiss') SwissKnife && SwissKnife.init();
   if (name === 'cvss') CVSSCalc && CVSSCalc.calc();
   if (name === 'threatactor') ThreatActorCards && ThreatActorCards.updatePreview();
+  if (name === 'yara') YaraEditor && YaraEditor.init();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
