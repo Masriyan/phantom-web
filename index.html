@@ -57,6 +57,9 @@
       <div class="nav-item" data-page="cvss">
         <span class="nav-icon">⊟</span><span>CVSS Calculator</span>
       </div>
+      <div class="nav-item" data-page="yara">
+        <span class="nav-icon">⊣</span><span>YARA Rule Editor</span>
+      </div>
     </nav>
     <div id="sidebar-footer">
       <div>Zero external API</div>
@@ -1128,6 +1131,85 @@
         </div>
       </div>
 
+      <!-- ===== YARA RULE EDITOR ===== -->
+      <div class="page" id="page-yara">
+        <div class="grid-2" style="gap:16px;height:calc(100vh - 120px)">
+          <div class="card" style="display:flex;flex-direction:column">
+            <div class="card-header">
+              <span class="card-title">YARA Rule Editor</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="YaraEditor.newRule()">New Rule</button>
+                <button class="btn btn-ghost btn-sm" onclick="YaraEditor.loadExample()">Load Example</button>
+                <button class="btn btn-primary btn-sm" onclick="YaraEditor.testRule()">Test Rule</button>
+              </div>
+            </div>
+            <div class="card-body" style="flex:1;display:flex;flex-direction:column;gap:12px">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Rule Name</label>
+                <input type="text" id="yara-rule-name" placeholder="e.g. Suspicious_PowerShell_Download" style="font-family:monospace;font-size:12px">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Rule Metadata (JSON)</label>
+                <textarea id="yara-rule-meta" placeholder='{"author":"Analyst","description":"Detects suspicious PowerShell download cradles","severity":"high"}' style="min-height:80px;font-family:monospace;font-size:11px"></textarea>
+              </div>
+              <div class="form-group" style="flex:1;display:flex;flex-direction:column;margin-bottom:0">
+                <label class="form-label">YARA Rule Source</label>
+                <textarea id="yara-rule-source" placeholder="rule Suspicious_PowerShell_Download {
+    meta:
+        description = &quot;Detects PowerShell download cradles&quot;
+        author = &quot;Security Analyst&quot;
+        severity = &quot;high&quot;
+    
+    strings:
+        $ps1 = /powershell[\\s]+-[Ee][Nn][Cc](?:[Oo][Dd][Ee])?/
+        $ps2 = &quot;IEX(&quot;
+        $ps3 = &quot;DownloadString&quot;
+        $ps4 = &quot;WebClient&quot;
+    
+    condition:
+        any of them
+}" style="flex:1;min-height:300px;resize:none;font-family:'JetBrains Mono','Fira Code',Consolas,monospace;font-size:11px;line-height:1.5"></textarea>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-ghost btn-sm" onclick="YaraEditor.validateSyntax()">Validate Syntax</button>
+                <button class="btn btn-ghost btn-sm" onclick="YaraEditor.exportRule()">Export .yar</button>
+                <button class="btn btn-ghost btn-sm" onclick="YaraEditor.importRule()">Import .yar</button>
+                <input type="file" id="yara-import-file" accept=".yar,.yara" style="display:none" onchange="YaraEditor.handleImport(this)">
+              </div>
+            </div>
+          </div>
+          <div class="flex-col" style="gap:16px">
+            <div class="card" style="flex:1;display:flex;flex-direction:column">
+              <div class="card-header">
+                <span class="card-title">Test Input (Sample Text/Binary)</span>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('yara-test-file').click()">Upload File</button>
+                  <button class="btn btn-ghost btn-sm" onclick="YaraEditor.clearTest()">Clear</button>
+                  <input type="file" id="yara-test-file" style="display:none" onchange="YaraEditor.loadTestFile(this)">
+                </div>
+              </div>
+              <div class="card-body" style="flex:1;display:flex;flex-direction:column">
+                <textarea id="yara-test-input" placeholder="Paste sample text or upload a file to test your YARA rule against..." style="flex:1;min-height:200px;resize:none;font-family:monospace;font-size:11px"></textarea>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Test Results</span>
+                <span id="yara-result-badge" style="font-size:11px;color:var(--text3)">–</span>
+              </div>
+              <div class="card-body" id="yara-results" style="max-height:200px;overflow-y:auto">
+                <div class="empty-state"><div class="empty-icon">⊣</div><div class="empty-text">Run a test to see results here.</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Built-in Rule Library</span></div>
+              <div class="card-body" id="yara-library" style="max-height:150px;overflow-y:auto;padding:8px">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
   </div><!-- /main -->
